@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div>
       <Navbar />
-      <Beranda/>
+      <Beranda />
     </div>
   );
 }

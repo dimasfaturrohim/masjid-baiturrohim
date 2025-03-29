@@ -113,7 +113,7 @@ export default function Beranda() {
   return (
     <div>
       {/* Carousel */}
-      <div className="relative w-screen overflow-hidden rounded-lg shadow-lg mb-8">
+      <div className="relative w-screen overflow-hidden shadow-lg">
         <div
           className="flex transition-transform duration-500 ease-in-out"
           style={{
@@ -125,7 +125,7 @@ export default function Beranda() {
               <img
                 src={image.src}
                 alt={`Masjid ${index + 1}`}
-                className="w-full h-[400px] object-cover"
+                className="w-full h-[600px] object-cover"
               />
               {/* Deskripsi muncul saat hover */}
               <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent text-white px-4 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -149,60 +149,11 @@ export default function Beranda() {
         </button>
       </div>
 
-      {/* Kegiatan Masjid */}
-      <div className="py-12">
-        <div className="container mx-auto px-6 2xl:px-0 xl:max-w-7xl">
-          {/* Header */}
-          <div className="flex flex-col mb-7">
-            <h1 className="font-medium text-[#212121] text-[32px] md:text-4xl leading-[38px] md:self-center">
-              Kegiatan Masjid
-            </h1>
-            <div className="border-t-[3px] border-[#16A75C] w-[128px] mt-[26px] mb-[26px] md:self-center"></div>
-            <p className="text-sm md:text-base text-[#616161] leading-[23px] md:leading-[26px] md:self-center md:text-center md:max-w-[600px]">
-              Masjid Baiturrohim memiliki berbagai kegiatan yang dapat diikuti
-              oleh jamaah dari berbagai kalangan.
-            </p>
-          </div>
-
-          {/* Kegiatan Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {kegiatan.map((item, index) => (
-              <div
-                key={index}
-                className="relative w-full h-[330px] rounded-lg overflow-hidden group mx-auto"
-              >
-                {/* Background Image */}
-                <div
-                  className="absolute w-full h-full bg-no-repeat bg-cover rounded-lg group-hover:scale-110 transition-all duration-500"
-                  style={{ backgroundImage: `url(${item.image})` }}
-                ></div>
-
-                {/* Overlay and Content */}
-                <div className="absolute flex flex-col justify-between p-4 w-full h-full rounded-lg bg-gradient-to-t from-[#000000]/70 group-hover:from-[#000000]/90 to-[#000000]/0 group-hover:to-[#000000]/40 transition-all duration-500">
-                  <a
-                    href={item.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="cursor-pointer transition-all duration-500 bg-[#FFFFFF]/20 group-hover:bg-[#16A75C] rounded-full w-[38px] h-[38px] flex justify-center items-center self-end"
-                  >
-                    <ArrowTopRightOnSquareIcon className="w-5 h-5 text-white" />
-                  </a>
-                  <h2 className="text-xl text-white leading-8">{item.title}</h2>
-                  <p className="text-sm text-white leading-5">
-                    {item.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* Jadwal Shalat Selanjutnya */}
-      <div className="max-w-7xl mx-auto px-4 py-8 mb-12">
+      <div className="w-full mx-auto px-0">
         {' '}
         {/* Tambahkan mb-12 untuk jarak */}
-        <div className="bg-green-500 rounded-lg p-6 text-white text-center mb-8">
+        <div className="bg-green-500 p-6 text-white text-center mb-8">
           <h1 className="text-xl mb-2">Jadwal Shalat Selanjutnya</h1>
           <h2 className="text-4xl font-bold mb-2">{nextPrayer.name}</h2>
           <p className="text-lg">
@@ -230,7 +181,7 @@ export default function Beranda() {
         {/* Aturan Kunjungan Ke Masjid */}
         <section className="mt-12">
           {/* Header Section */}
-          <div className="bg-[#16A75C] text-white py-12 md:py-16 rounded-2xl">
+          <div className="bg-[#16A75C] text-white py-12 md:py-16 mb-8">
             {' '}
             {/* Tambahkan rounded-2xl */}
             <div className="container mx-auto px-6 2xl:px-0 xl:max-w-7xl">
@@ -245,7 +196,7 @@ export default function Beranda() {
           </div>
 
           {/* Cards Section */}
-          <div className="container mx-auto px-6 2xl:px-0 xl:max-w-7xl flex flex-col md:flex-row gap-8 mt-8">
+          <div className="container mx-auto px-6 2xl:px-0 xl:max-w-7xl flex flex-col md:flex-row gap-8">
             {/* Card 1 */}
             <div className="flex flex-col bg-white p-6 rounded-2xl shadow-2xl hover:shadow-[0_4px_20px_rgba(0,0,0,0.2)] transition-shadow duration-300 h-[400px]">
               <div>
@@ -325,6 +276,55 @@ export default function Beranda() {
             </div>
           </div>
         </section>
+      </div>
+
+      {/* Kegiatan Masjid */}
+      <div className="py-12">
+        <div className="container mx-auto px-1 2xl:px-0 xl:max-w-7xl">
+          {/* Header */}
+          <div className="flex flex-col mb-7">
+            <h1 className="font-medium text-[#212121] text-[32px] md:text-4xl leading-[38px] md:self-center">
+              Kegiatan Masjid
+            </h1>
+            <div className="border-t-[3px] border-[#16A75C] w-[128px] mt-[26px] mb-[26px] md:self-center"></div>
+            <p className="text-sm md:text-base text-[#616161] leading-[23px] md:leading-[26px] md:self-center md:text-center md:max-w-[600px]">
+              Masjid Baiturrohim memiliki berbagai kegiatan yang dapat diikuti
+              oleh jamaah dari berbagai kalangan.
+            </p>
+          </div>
+
+          {/* Kegiatan Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {kegiatan.map((item, index) => (
+              <div
+                key={index}
+                className="relative w-full h-[330px] rounded-lg overflow-hidden group mx-auto"
+              >
+                {/* Background Image */}
+                <div
+                  className="absolute w-full h-full bg-no-repeat bg-cover rounded-lg group-hover:scale-110 transition-all duration-500"
+                  style={{ backgroundImage: `url(${item.image})` }}
+                ></div>
+
+                {/* Overlay and Content */}
+                <div className="absolute flex flex-col justify-between p-4 w-full h-full rounded-lg bg-gradient-to-t from-[#000000]/70 group-hover:from-[#000000]/90 to-[#000000]/0 group-hover:to-[#000000]/40 transition-all duration-500">
+                  <a
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cursor-pointer transition-all duration-500 bg-[#FFFFFF]/20 group-hover:bg-[#16A75C] rounded-full w-[38px] h-[38px] flex justify-center items-center self-end"
+                  >
+                    <ArrowTopRightOnSquareIcon className="w-5 h-5 text-white" />
+                  </a>
+                  <h2 className="text-xl text-white leading-8">{item.title}</h2>
+                  <p className="text-sm text-white leading-5">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
