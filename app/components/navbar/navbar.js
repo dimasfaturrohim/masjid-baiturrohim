@@ -1,5 +1,6 @@
 'use client'; // Tambahkan ini di bagian atas file
 import { useRouter } from 'next/navigation'; // Tambahkan impor useRouter
+import Image from 'next/image'; // Tambahkan impor Image dari Next.js
 
 export default function Navbar() {
   const router = useRouter();
@@ -11,11 +12,25 @@ export default function Navbar() {
   return (
     <nav className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex-shrink-0">
-            <a href="/" className="text-2xl font-bold text-green-500">
-              Masjid Baiturrohim
-            </a>
+        <div className="flex justify-between items-center h-20">
+          {' '}
+          {/* Perbesar tinggi navbar */}
+          <div className="flex items-center flex-shrink-0">
+            <Image
+              src="/images/Logo Masjid Baiturrohim.png"
+              alt="Logo Masjid Baiturrohim"
+              width={60} // Perbesar ukuran logo
+              height={60} // Perbesar ukuran logo
+              className="mr-4" // Tambahkan margin kanan agar ada jarak dengan teks
+            />
+            <div className="text-green-500 text-left">
+              <div className="text-xl font-bold leading-none">Masjid</div>{' '}
+              {/* Tulisan Masjid */}
+              <div className="text-2xl font-bold leading-none">
+                Baiturrohim
+              </div>{' '}
+              {/* Tulisan Baiturrohim */}
+            </div>
           </div>
           <div className="hidden md:flex space-x-4">
             <button
