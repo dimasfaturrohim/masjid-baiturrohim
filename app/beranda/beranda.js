@@ -117,99 +117,70 @@ export default function Beranda() {
 
   return (
     <div>
-      {/* Carousel */}
-      <div className="relative w-full overflow-hidden">
-        {/* Carousel Wrapper */}
-        <div
-          className="flex transition-transform duration-700 ease-in-out"
-          style={{
-            transform: `translateX(-${currentSlide * 100}%)`,
-          }}
-        >
-          {images.map((image, index) => (
-            <div key={index} className="w-full flex-shrink-0 relative group">
-              {/* Gambar Carousel */}
-              <img
-                src={image.src}
-                alt={`Slide ${index + 1}`}
-                className="w-full h-[500px] object-cover  shadow-lg"
-              />
-              {/* Overlay Deskripsi */}
-              <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent text-white px-6 py-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <p className="text-lg md:text-xl font-semibold leading-6 md:leading-8">
-                  {image.description}
+      {/* Hero Section dengan Jadwal Shalat */}
+      <div className="relative w-full h-[600px] overflow-hidden">
+        {/* Background Image */}
+        <img
+          src="/images/masjid1.jpg" // Ganti dengan salah satu gambar dari carousel
+          alt="Masjid Baiturrohim"
+          className="w-full h-full object-cover"
+        />
+
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1C1C1C]/80 to-transparent"></div>
+
+        {/* Text Content */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-6">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-wide">
+            Masjid Baiturrohim
+          </h1>
+          <p className="mt-4 text-lg md:text-xl font-medium max-w-2xl">
+            Menyebarkan kedamaian dan keindahan Islam melalui kegiatan ibadah
+            dan sosial.
+          </p>
+        </div>
+
+        {/* Jadwal Shalat Selanjutnya */}
+        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-r from-[#6DB144] to-[#1C5827] text-white shadow-lg rounded-t-3xl px-6 py-8">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            {/* Informasi Waktu Shalat Selanjutnya */}
+            <div className="mb-6 md:mb-0 text-center md:text-left">
+              <h1 className="text-2xl font-bold mb-2">
+                Jadwal Shalat Selanjutnya
+              </h1>
+              <h2 className="text-4xl md:text-5xl font-extrabold mb-2">
+                {nextPrayer.name}
+              </h2>
+              <p className="text-lg">
+                Akan dimulai dalam{' '}
+                <span className="font-bold text-2xl text-[#F6A623]">
+                  {hoursLeft} jam : {minutesLeft} menit
+                </span>
+              </p>
+            </div>
+
+            {/* Ikon dan Waktu */}
+            <div className="flex items-center gap-6">
+              <div className="flex flex-col items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-12 w-12 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <p className="text-sm font-medium">Waktu Saat Ini</p>
+                <p className="text-lg font-bold">
+                  {new Date().toLocaleTimeString()}
                 </p>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Tombol Navigasi */}
-        <button
-          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/50 text-white rounded-full p-3 shadow-md hover:bg-black/70 transition"
-          onClick={handlePrevSlide}
-        >
-          &#8249;
-        </button>
-        <button
-          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/50 text-white rounded-full p-3 shadow-md hover:bg-black/70 transition"
-          onClick={handleNextSlide}
-        >
-          &#8250;
-        </button>
-
-        {/* Indikator Slide */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-          {images.map((_, index) => (
-            <button
-              key={index}
-              className={`w-3 h-3 rounded-full ${
-                currentSlide === index ? 'bg-green-500' : 'bg-gray-300'
-              }`}
-              onClick={() => setCurrentSlide(index)}
-            ></button>
-          ))}
-        </div>
-      </div>
-
-      {/* Jadwal Shalat Selanjutnya */}
-      <div className="w-full px-6 py-8 bg-gradient-to-r from-green-500 to-green-600  shadow-lg text-white">
-        <div className="flex flex-col md:flex-row items-center justify-between">
-          {/* Informasi Waktu Shalat Selanjutnya */}
-          <div className="mb-6 md:mb-0">
-            <h1 className="text-2xl font-bold mb-2">
-              Jadwal Shalat Selanjutnya
-            </h1>
-            <h2 className="text-5xl font-extrabold mb-2">{nextPrayer.name}</h2>
-            <p className="text-lg">
-              Akan dimulai dalam{' '}
-              <span className="font-bold text-2xl">
-                {hoursLeft} jam : {minutesLeft} menit
-              </span>
-            </p>
-          </div>
-
-          {/* Ikon dan Waktu */}
-          <div className="flex items-center gap-6">
-            <div className="flex flex-col items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-12 w-12 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <p className="text-sm font-medium">Waktu Saat Ini</p>
-              <p className="text-lg font-bold">
-                {new Date().toLocaleTimeString()}
-              </p>
             </div>
           </div>
         </div>
@@ -220,12 +191,12 @@ export default function Beranda() {
         {prayerTimes.map((prayer, index) => (
           <div
             key={index}
-            className="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
+            className="bg-[#F3E9DC] rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
           >
-            <p className="text-lg font-bold text-green-600 mb-2">
+            <p className="text-lg font-bold text-[#1C5827] mb-2">
               {prayer.name}
             </p>
-            <p className="text-gray-700 text-xl font-semibold">
+            <p className="text-[#1C1C1C] text-xl font-semibold">
               {prayer.time} WIB
             </p>
           </div>
@@ -237,11 +208,11 @@ export default function Beranda() {
         <div className="container mx-auto px-1 2xl:px-0 xl:max-w-7xl">
           {/* Header */}
           <div className="flex flex-col mb-7">
-            <h1 className="font-medium text-[#212121] text-[32px] md:text-4xl leading-[38px] md:self-center">
+            <h1 className="font-medium text-[#1C1C1C] text-[32px] md:text-4xl leading-[38px] md:self-center">
               Kegiatan Masjid
             </h1>
-            <div className="border-t-[3px] border-[#16A75C] w-[128px] mt-[26px] mb-[26px] md:self-center"></div>
-            <p className="text-sm md:text-base text-[#616161] leading-[23px] md:leading-[26px] md:self-center md:text-center md:max-w-[600px]">
+            <div className="border-t-[3px] border-[#6DB144] w-[128px] mt-[26px] mb-[26px] md:self-center"></div>
+            <p className="text-sm md:text-base text-[#1C1C1C] leading-[23px] md:leading-[26px] md:self-center md:text-center md:max-w-[600px]">
               Masjid Baiturrohim memiliki berbagai kegiatan yang dapat diikuti
               oleh jamaah dari berbagai kalangan.
             </p>
@@ -261,12 +232,12 @@ export default function Beranda() {
                 ></div>
 
                 {/* Overlay and Content */}
-                <div className="absolute flex flex-col justify-between p-4 w-full h-full rounded-lg bg-gradient-to-t from-[#000000]/70 group-hover:from-[#000000]/90 to-[#000000]/0 group-hover:to-[#000000]/40 transition-all duration-500">
+                <div className="absolute flex flex-col justify-between p-4 w-full h-full rounded-lg bg-gradient-to-t from-[#1C1C1C]/70 group-hover:from-[#1C1C1C]/90 to-[#1C1C1C]/0 group-hover:to-[#1C1C1C]/40 transition-all duration-500">
                   <a
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="cursor-pointer transition-all duration-500 bg-[#FFFFFF]/20 group-hover:bg-[#16A75C] rounded-full w-[38px] h-[38px] flex justify-center items-center self-end"
+                    className="cursor-pointer transition-all duration-500 bg-[#FFFFFF]/20 group-hover:bg-[#6DB144] rounded-full w-[38px] h-[38px] flex justify-center items-center self-end"
                   >
                     <ArrowTopRightOnSquareIcon className="w-5 h-5 text-white" />
                   </a>
@@ -287,12 +258,12 @@ export default function Beranda() {
         <div className="flex flex-col mb-6 md:mb-12">
           <div className="flex justify-between items-center">
             <div className="flex flex-col">
-              <h1 className="font-medium text-[#212121] text-[32px] md:text-4xl leading-[38px]">
+              <h1 className="font-medium text-[#1C1C1C] text-[32px] md:text-4xl leading-[38px]">
                 Video Kajian Terbaru
               </h1>
-              <div className="border-t-[3px] border-[#16A75C] max-w-[128px] mt-[26px]"></div>
+              <div className="border-t-[3px] border-[#6DB144] max-w-[128px] mt-[26px]"></div>
             </div>
-            <button className="px-4 py-[9px] flex items-center rounded-lg border whitespace-nowrap font-bold disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600 disabled:border-gray-300 hidden md:block max-h-[38px] text-[#16A75C] font-bold text-sm leading-[18px] rounded-lg border-[#16A75C]">
+            <button className="px-4 py-[9px] flex items-center rounded-lg border whitespace-nowrap font-bold hidden md:block max-h-[38px] text-[#1C5827] text-sm leading-[18px] border-[#1C5827] hover:bg-[#1C5827] hover:text-white transition">
               <div className="flex justify-center items-center gap-3 w-full">
                 <a
                   href="https://www.youtube.com/@masjidaljabbar"
@@ -300,7 +271,7 @@ export default function Beranda() {
                   className="flex justify-between w-full"
                 >
                   <p className="mr-[10px]">Lihat Semua Video</p>
-                  <PlayIcon className="w-5 h-5 text-[#16A75C]" />
+                  <PlayIcon className="w-5 h-5" />
                 </a>
               </div>
             </button>
@@ -343,13 +314,13 @@ export default function Beranda() {
                     className="absolute w-full h-full bg-cover bg-no-repeat rounded-lg group-hover:scale-110 transition-all"
                     style={{ backgroundImage: `url(${video.thumbnail})` }}
                   ></div>
-                  <div className="absolute w-full h-full bg-[#000000]/10 flex justify-center items-center">
-                    <div className="transition-all bg-[#16A75C] md:bg-[#FFFFFF]/20 group-hover:bg-[#16A75C] rounded-full w-[50px] h-[50px] flex justify-center items-center">
+                  <div className="absolute w-full h-full bg-[#1C1C1C]/10 flex justify-center items-center">
+                    <div className="transition-all bg-[#6DB144] group-hover:bg-[#1C5827] rounded-full w-[50px] h-[50px] flex justify-center items-center">
                       <PlayIcon className="w-6 h-6 text-white" />
                     </div>
                   </div>
                 </div>
-                <h2 className="font-medium leading-[26px] text-[#212121] mb-2 line-clamp-2">
+                <h2 className="font-medium leading-[26px] text-[#1C1C1C] mb-2 line-clamp-2">
                   {video.title}
                 </h2>
                 <p className="text-sm leading-[23px] text-[#757575]">
@@ -361,7 +332,7 @@ export default function Beranda() {
         </div>
 
         {/* Button for Mobile */}
-        <button className="px-4 py-[9px] flex items-center rounded-lg border whitespace-nowrap font-bold disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600 disabled:border-gray-300 md:hidden max-h-[38px] w-full mt-12 text-[#16A75C] font-bold text-sm leading-[18px] rounded-lg border-[#16A75C]">
+        <button className="px-4 py-[9px] flex items-center rounded-lg border whitespace-nowrap font-bold md:hidden max-h-[38px] w-full mt-12 text-[#1C5827] text-sm leading-[18px] border-[#1C5827] hover:bg-[#1C5827] hover:text-white transition">
           <div className="flex justify-center items-center gap-3 w-full">
             <a
               href="https://www.youtube.com/@masjidaljabbar"
@@ -369,13 +340,14 @@ export default function Beranda() {
               className="flex justify-between w-full"
             >
               Lihat Semua Video
-              <PlayIcon className="w-5 h-5 text-[#16A75C]" />
+              <PlayIcon className="w-5 h-5" />
             </a>
           </div>
         </button>
       </div>
+
       {/* Footer Section */}
-      <footer className="relative flex flex-col bg-gray-900 text-white pt-12 pb-7">
+      <footer className="relative flex flex-col bg-[#1C1C1C] text-white pt-12 pb-7">
         <div className="container mx-auto px-6 2xl:px-0 xl:max-w-7xl">
           {/* Logo and Text */}
           <div className="flex items-center mb-6">
@@ -397,14 +369,14 @@ export default function Beranda() {
           <div className="grid grid-flow-row md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {/* Address */}
             <div className="flex items-start gap-4">
-              <MapPinIcon className="w-6 h-6 text-green-400" />
+              <MapPinIcon className="w-6 h-6 text-[#6DB144]" />
               <div>
                 <p className="font-bold text-base leading-6 mb-3">
                   Alamat Lengkap
                 </p>
                 <a
                   href="https://goo.gl/maps/cnxeTzAyf9a9cuGy9"
-                  className="text-gray-400 text-sm leading-6 hover:text-green-400"
+                  className="text-gray-400 text-sm leading-6 hover:text-[#6DB144]"
                 >
                   Jl. Masjid Baiturrohim No. 14, Kota Bandung, Jawa Barat 40292
                 </a>
@@ -413,12 +385,12 @@ export default function Beranda() {
 
             {/* Email */}
             <div className="flex items-start gap-4">
-              <EnvelopeIcon className="w-6 h-6 text-green-400" />
+              <EnvelopeIcon className="w-6 h-6 text-[#6DB144]" />
               <div>
                 <p className="font-bold text-base leading-6 mb-3">Email</p>
                 <a
                   href="mailto:info@baiturrohim.id"
-                  className="text-gray-400 text-sm leading-6 hover:text-green-400"
+                  className="text-gray-400 text-sm leading-6 hover:text-[#6DB144]"
                 >
                   info@baiturrohim.id
                 </a>
@@ -427,14 +399,14 @@ export default function Beranda() {
 
             {/* Contact */}
             <div className="flex items-start gap-4">
-              <PhoneIcon className="w-6 h-6 text-green-400" />
+              <PhoneIcon className="w-6 h-6 text-[#6DB144]" />
               <div>
                 <p className="font-bold text-base leading-6 mb-3">Kontak DKM</p>
                 <a
                   href="https://wa.me/+6281234567890"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-400 text-sm leading-6 hover:text-green-400"
+                  className="text-gray-400 text-sm leading-6 hover:text-[#6DB144]"
                 >
                   (+62) 812-3456-7890
                 </a>
@@ -443,7 +415,7 @@ export default function Beranda() {
 
             {/* Social Media */}
             <div className="flex items-start gap-4">
-              <GlobeAltIcon className="w-6 h-6 text-green-400" />
+              <GlobeAltIcon className="w-6 h-6 text-[#6DB144]" />
               <div>
                 <p className="font-bold text-base leading-6 mb-3">
                   Sosial Media
@@ -453,7 +425,7 @@ export default function Beranda() {
                     href="https://www.instagram.com/masjidbaiturrohim"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center hover:text-green-400"
+                    className="flex items-center hover:text-[#6DB144]"
                   >
                     <MapPinIcon className="w-5 h-5 text-gray-400" />
                     <p className="text-gray-400 text-sm leading-6 font-medium ml-3">
@@ -464,7 +436,7 @@ export default function Beranda() {
                     href="https://www.youtube.com/@masjidbaiturrohim"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center hover:text-green-400"
+                    className="flex items-center hover:text-[#6DB144]"
                   >
                     <GlobeAltIcon className="w-5 h-5 text-gray-400" />
                     <p className="text-gray-400 text-sm leading-6 font-medium ml-3">
