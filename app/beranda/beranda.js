@@ -118,12 +118,12 @@ export default function Beranda() {
   return (
     <div>
       {/* Hero Section dengan Jadwal Shalat */}
-      <div className="relative w-full h-[600px] overflow-hidden">
+      <div className="relative w-full h-auto md:h-[600px] overflow-hidden">
         {/* Background Image */}
         <img
           src="/images/masjid1.jpg" // Ganti dengan salah satu gambar dari carousel
           alt="Masjid Baiturrohim"
-          className="w-full h-full object-cover"
+          className="w-full h-[300px] md:h-full object-cover"
         />
 
         {/* Overlay */}
@@ -131,56 +131,56 @@ export default function Beranda() {
 
         {/* Text Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-6">
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-wide">
+          <h1 className="text-3xl md:text-6xl font-extrabold tracking-wide">
             Masjid Baiturrohim
           </h1>
-          <p className="mt-4 text-lg md:text-xl font-medium max-w-2xl">
+          <p className="mt-4 text-base md:text-xl font-medium max-w-2xl">
             Menyebarkan kedamaian dan keindahan Islam melalui kegiatan ibadah
             dan sosial.
           </p>
         </div>
 
         {/* Jadwal Shalat Selanjutnya */}
-        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-r from-[#6DB144] to-[#1C5827] text-white shadow-lg rounded-t-3xl px-6 py-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
+        <div className="relative md:absolute bottom-0 left-0 w-full bg-gradient-to-r from-[#6DB144] to-[#1C5827] text-white shadow-lg md:rounded-t-3xl px-6 py-8 md:py-6 md:px-8">
+          <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
             {/* Informasi Waktu Shalat Selanjutnya */}
-            <div className="mb-6 md:mb-0 text-center md:text-left">
-              <h1 className="text-2xl font-bold mb-2">
+            <div className="text-center md:text-left">
+              <h1 className="text-xl md:text-2xl font-bold mb-2">
                 Jadwal Shalat Selanjutnya
               </h1>
-              <h2 className="text-4xl md:text-5xl font-extrabold mb-2">
+              <h2 className="text-3xl md:text-5xl font-extrabold mb-2">
                 {nextPrayer.name}
               </h2>
-              <p className="text-lg">
+              <p className="text-base md:text-lg">
                 Akan dimulai dalam{' '}
-                <span className="font-bold text-2xl text-[#F6A623]">
+                <span className="font-bold text-xl md:text-2xl text-[#F6A623]">
                   {hoursLeft} jam : {minutesLeft} menit
                 </span>
               </p>
             </div>
 
             {/* Ikon dan Waktu */}
-            <div className="flex items-center gap-6">
-              <div className="flex flex-col items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-12 w-12 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <p className="text-sm font-medium">Waktu Saat Ini</p>
-                <p className="text-lg font-bold">
-                  {new Date().toLocaleTimeString()}
-                </p>
-              </div>
+            <div className="flex flex-col items-center md:items-end">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-10 w-10 md:h-12 md:w-12 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <p className="text-sm md:text-base font-medium mt-2">
+                Waktu Saat Ini
+              </p>
+              <p className="text-lg font-bold">
+                {new Date().toLocaleTimeString()}
+              </p>
             </div>
           </div>
         </div>
