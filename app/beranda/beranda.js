@@ -116,7 +116,7 @@ export default function Beranda() {
   const minutesLeft = nextPrayer.remainingTime % 60;
 
   return (
-    <div>
+    <div className="bg-white">
       {/* Hero Section dengan Jadwal Shalat */}
       <div className="relative w-full h-auto md:h-[600px] overflow-hidden">
         {/* Background Image */}
