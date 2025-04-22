@@ -52,10 +52,16 @@ export default function Navbar() {
               Kegiatan
             </button>
             <button
-              onClick={() => handleNavigation('/contact')}
+              onClick={() => handleNavigation('/donasi')}
               className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
             >
-              Profil
+              Donasi
+            </button>
+            <button
+              onClick={() => handleNavigation('/pengurus')}
+              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
+            >
+              Struktur Kepengurusan
             </button>
           </div>
         </div>
