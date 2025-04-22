@@ -63,6 +63,12 @@ export default function Navbar() {
             >
               Struktur Kepengurusan
             </button>
+            <button
+              onClick={() => handleNavigation('/laporan')}
+              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
+            >
+              Laporan Keuangan
+            </button>
           </div>
         </div>
       </div>
