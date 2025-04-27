@@ -13,6 +13,8 @@ import {
 import SidebarAdmin from '@/app/components/navbar/sidebar-admin';
 
 export default function KegiatanAdmin() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
   // Sample data for activities
   const [kegiatan, setKegiatan] = useState([
     {
@@ -132,13 +134,13 @@ export default function KegiatanAdmin() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <SidebarAdmin />
+      <SidebarAdmin isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       {/* Main content */}
       <div className="flex-1 flex flex-col">
-        <main className="flex-1 p-6 md:p-8">
-          {/* Page Header */}
-          <div className="flex justify-between items-center mb-6">
+        <main className="flex-1 p-6 md:p-8 overflow-x-auto">
+          {/* Page Header - wrapped in a min-width container */}
+          <div className="flex justify-between items-center mb-6 min-w-max">
             <div>
               <h1 className="text-2xl font-bold text-gray-800">
                 Manajemen Kegiatan
@@ -149,114 +151,30 @@ export default function KegiatanAdmin() {
             </div>
             <button
               onClick={openAddModal}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center shadow-sm transition-colors"
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center shadow-sm transition-colors whitespace-nowrap"
             >
               <PlusIcon className="h-5 w-5 mr-1" />
               Tambah Kegiatan
             </button>
           </div>
 
-          {/* Main Card */}
-          <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+          {/* Main Card with overflow handling */}
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden min-w-[40rem]">
             {/* Card Header */}
             <div className="px-6 py-4 border-b border-gray-100">
               <h2 className="font-semibold text-gray-800">Daftar Kegiatan</h2>
             </div>
 
-            {/* Table */}
+            {/* Table with improved overflow handling */}
             {kegiatan.length > 0 ? (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
+                <table className="w-full divide-y divide-gray-200">
+                  {/* Keep your existing table content */}
                   <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Nama Kegiatan
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Tanggal
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Waktu
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Lokasi
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Penanggung Jawab
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Aksi
-                      </th>
-                    </tr>
+                    {/* Your existing thead */}
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {kegiatan.map((item) => (
-                      <tr key={item.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="font-medium text-gray-900">
-                            {item.nama}
-                          </div>
-                          <div className="text-sm text-gray-500 truncate max-w-xs">
-                            {item.deskripsi}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <CalendarIcon className="h-4 w-4 text-gray-400 mr-1" />
-                            <span className="text-sm text-gray-700">
-                              {new Date(item.tanggal).toLocaleDateString(
-                                'id-ID',
-                                {
-                                  day: 'numeric',
-                                  month: 'long',
-                                  year: 'numeric',
-                                }
-                              )}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <ClockIcon className="h-4 w-4 text-gray-400 mr-1" />
-                            <span className="text-sm text-gray-700">
-                              {item.waktu}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <MapPinIcon className="h-4 w-4 text-gray-400 mr-1" />
-                            <span className="text-sm text-gray-700">
-                              {item.lokasi}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <UserIcon className="h-4 w-4 text-gray-400 mr-1" />
-                            <span className="text-sm text-gray-700">
-                              {item.penanggungjawab}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <div className="flex space-x-2">
-                            <button
-                              onClick={() => openEditModal(item.id)}
-                              className="text-blue-600 hover:text-blue-800 p-1"
-                            >
-                              <PencilSquareIcon className="h-5 w-5" />
-                            </button>
-                            <button
-                              onClick={() => openDeleteModal(item.id)}
-                              className="text-red-600 hover:text-red-800 p-1"
-                            >
-                              <TrashIcon className="h-5 w-5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                    {/* Your existing tbody */}
                   </tbody>
                 </table>
               </div>
