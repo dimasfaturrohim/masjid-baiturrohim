@@ -8,9 +8,9 @@ import {
   ChevronRightIcon,
   UserIcon,
 } from '@heroicons/react/24/outline';
-import Navbar from '../components/navbar/navbar';
+import Navbar from '../../components/navbar/navbar';
+import Footer from '../../components/navbar/footer';
 import { useState, useEffect } from 'react';
-import Footer from '../components/navbar/footer';
 
 export default function Kajian() {
   const [currentPage, setCurrentPage] = useState(1);

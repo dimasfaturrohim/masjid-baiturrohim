@@ -1,77 +1,96 @@
-'use client'; // Tambahkan ini di bagian atas file
-import { useRouter } from 'next/navigation'; // Tambahkan impor useRouter
-import Image from 'next/image'; // Tambahkan impor Image dari Next.js
+'use client';
+import { useRouter, usePathname } from 'next/navigation';
+import Image from 'next/image';
+import { useState, useEffect } from 'react';
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname(); // Get current pathname
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeRoute, setActiveRoute] = useState(pathname); // Initialize with current pathname
+
+  // Update activeRoute when pathname changes
+  useEffect(() => {
+    setActiveRoute(pathname);
+  }, [pathname]);
 
   const handleNavigation = (path) => {
-    router.push(path); // Navigasi ke halaman tertentu
+    if (path !== pathname) {
+      setIsLoading(true);
+      // Set the active route immediately to avoid flashing
+      setActiveRoute(path);
+      router.push(path);
+
+      // Simulate loading time (you may remove this in production)
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 800);
+    }
   };
 
+  // Function to determine if a nav item is active
+  const isActive = (path) => {
+    return activeRoute === path;
+  };
+
+  // Navigation items for cleaner code
+  const navItems = [
+    { path: '/', label: 'Beranda' },
+    { path: '/kajian', label: 'Kajian' },
+    { path: '/kegiatan', label: 'Kegiatan' },
+    { path: '/donasi', label: 'Donasi' },
+    { path: '/pengurus', label: 'Struktur Kepengurusan' },
+    { path: '/laporan', label: 'Laporan Keuangan' },
+  ];
+
   return (
-    <nav className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          {' '}
-          {/* Perbesar tinggi navbar */}
-          <div className="flex items-center flex-shrink-0">
-            <Image
-              src="/images/Logo Masjid Baiturrohim.png"
-              alt="Logo Masjid Baiturrohim"
-              width={60} // Perbesar ukuran logo
-              height={60} // Perbesar ukuran logo
-              className="mr-4" // Tambahkan margin kanan agar ada jarak dengan teks
-            />
-            <div className="text-green-500 text-left">
-              <div className="text-xl font-bold leading-none">Masjid</div>{' '}
-              {/* Tulisan Masjid */}
-              <div className="text-2xl font-bold leading-none">
-                Baiturrohim
-              </div>{' '}
-              {/* Tulisan Baiturrohim */}
-            </div>
-          </div>
-          <div className="hidden md:flex space-x-4">
-            <button
-              onClick={() => handleNavigation('/')}
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Beranda
-            </button>
-            <button
-              onClick={() => handleNavigation('/kajian')}
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Kajian
-            </button>
-            <button
-              onClick={() => handleNavigation('/kegiatan')}
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Kegiatan
-            </button>
-            <button
-              onClick={() => handleNavigation('/donasi')}
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Donasi
-            </button>
-            <button
-              onClick={() => handleNavigation('/pengurus')}
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Struktur Kepengurusan
-            </button>
-            <button
-              onClick={() => handleNavigation('/laporan')}
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Laporan Keuangan
-            </button>
+    <>
+      {/* Loading overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-white bg-opacity-80 z-[60] flex items-center justify-center">
+          <div className="flex flex-col items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#6DB144]"></div>
+            <p className="mt-4 text-[#6DB144] font-medium">Loading...</p>
           </div>
         </div>
-      </div>
-    </nav>
+      )}
+
+      <nav className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            <div className="flex items-center flex-shrink-0">
+              <Image
+                src="/images/Logo Masjid Baiturrohim.png"
+                alt="Logo Masjid Baiturrohim"
+                width={60}
+                height={60}
+                className="mr-4"
+              />
+              <div className="text-green-500 text-left">
+                <div className="text-xl font-bold leading-none">Masjid</div>
+                <div className="text-2xl font-bold leading-none">
+                  Baiturrohim
+                </div>
+              </div>
+            </div>
+            <div className="hidden md:flex space-x-4">
+              {navItems.map((item) => (
+                <button
+                  key={item.path}
+                  onClick={() => handleNavigation(item.path)}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                    isActive(item.path)
+                      ? 'text-white bg-[#6DB144]'
+                      : 'text-gray-700 hover:text-[#6DB144]'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </nav>
+    </>
   );
 }

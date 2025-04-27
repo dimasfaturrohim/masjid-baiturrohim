@@ -1,5 +1,5 @@
 import Navbar from './components/navbar/navbar';
-import Beranda from './beranda/beranda';
+import Beranda from './front-user/beranda/beranda';
 export default function Home() {
   return (
     <div>

@@ -7,7 +7,7 @@ import {
   ChevronRightIcon,
   CalendarIcon,
 } from '@heroicons/react/24/outline';
-import Footer from '../components/navbar/footer';
+import Footer from '../../components/navbar/footer';
 
 export default function Beranda() {
   const [currentKegiatanPage, setCurrentKegiatanPage] = useState(1);
@@ -16,13 +16,37 @@ export default function Beranda() {
   const videosPerPage = 8;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentTime, setCurrentTime] = useState(new Date());
-
-  // Update the time every second
+  const [isLoading, setIsLoading] = useState(true);
+  // Update waktu saat ini setiap detik
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Perbarui waktu sholat saat komponen dimuat
+  useEffect(() => {
+    fetchPrayerTimes();
+
+    // Setup untuk memperbarui jadwal di tengah malam
+    const setupMidnightUpdate = () => {
+      const now = new Date();
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      const timeUntilMidnight = midnight - now;
+
+      return setTimeout(() => {
+        fetchPrayerTimes();
+        // Setup untuk tengah malam berikutnya
+        const nextInterval = setupMidnightUpdate();
+        return () => clearTimeout(nextInterval);
+      }, timeUntilMidnight);
+    };
+
+    const midnightTimeout = setupMidnightUpdate();
+
+    return () => clearTimeout(midnightTimeout);
   }, []);
 
   // Auto-advance the carousel every 5 seconds
@@ -33,14 +57,75 @@ export default function Beranda() {
     return () => clearInterval(interval);
   }, []);
 
-  const prayerTimes = [
-    { name: 'Shalat Shubuh', time: '04:36', icon: '🌅' },
-    { name: 'Syuruk/Terbit', time: '05:53', icon: '☀️' },
-    { name: 'Shalat Dzuhur', time: '11:55', icon: '🌤️' },
-    { name: 'Shalat Ashar', time: '15:10', icon: '🌇' },
-    { name: 'Shalat Maghrib', time: '17:57', icon: '🌆' },
-    { name: 'Shalat Isya', time: '19:06', icon: '🌙' },
-  ];
+  const [prayerTimes, setPrayerTimes] = useState([
+    { name: 'Shalat Shubuh', time: '--:--', icon: '🌅' },
+    { name: 'Syuruk/Terbit', time: '--:--', icon: '☀️' },
+    { name: 'Shalat Dzuhur', time: '--:--', icon: '🌤️' },
+    { name: 'Shalat Ashar', time: '--:--', icon: '🌇' },
+    { name: 'Shalat Maghrib', time: '--:--', icon: '🌆' },
+    { name: 'Shalat Isya', time: '--:--', icon: '🌙' },
+  ]);
+
+  const fetchPrayerTimes = async () => {
+    try {
+      // Koordinat Lampung (Bandar Lampung)
+      const latitude = -5.3971;
+      const longitude = 105.2663;
+
+      const date = new Date();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+
+      const url = `http://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=11`; // Method 11 for Indonesia
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const day = date.getDate() - 1; // API uses 0-based index
+      const todayPrayers = data.data[day].timings;
+
+      const prayerTimes = [
+        {
+          name: 'Shalat Shubuh',
+          time: todayPrayers.Fajr.split(' ')[0],
+          icon: '🌅',
+        },
+        {
+          name: 'Syuruk/Terbit',
+          time: todayPrayers.Sunrise.split(' ')[0],
+          icon: '☀️',
+        },
+        {
+          name: 'Shalat Dzuhur',
+          time: todayPrayers.Dhuhr.split(' ')[0],
+          icon: '🌤️',
+        },
+        {
+          name: 'Shalat Ashar',
+          time: todayPrayers.Asr.split(' ')[0],
+          icon: '🌇',
+        },
+        {
+          name: 'Shalat Maghrib',
+          time: todayPrayers.Maghrib.split(' ')[0],
+          icon: '🌆',
+        },
+        {
+          name: 'Shalat Isya',
+          time: todayPrayers.Isha.split(' ')[0],
+          icon: '🌙',
+        },
+      ];
+
+      setPrayerTimes(prayerTimes);
+      setIsLoading(false);
+      return prayerTimes;
+    } catch (error) {
+      console.error('Error fetching prayer times:', error);
+      setIsLoading(false);
+      return prayerTimes; // Return current state as fallback
+    }
+  };
 
   const kegiatan = [
     {
@@ -208,6 +293,8 @@ export default function Beranda() {
     const currentTime = now.getHours() * 60 + now.getMinutes();
 
     for (let i = 0; i < prayerTimes.length; i++) {
+      if (prayerTimes[i].time === '--:--') continue;
+
       const [hours, minutes] = prayerTimes[i].time.split(':').map(Number);
       const prayerTimeInMinutes = hours * 60 + minutes;
 
@@ -219,8 +306,9 @@ export default function Beranda() {
       }
     }
 
+    // Jika semua waktu sholat sudah lewat, ambil waktu sholat pertama untuk besok
     const [hours, minutes] = prayerTimes[0].time.split(':').map(Number);
-    const prayerTimeInMinutes = hours * 60 + minutes + 24 * 60;
+    const prayerTimeInMinutes = hours * 60 + minutes + 24 * 60; // Tambahkan 24 jam
     return {
       ...prayerTimes[0],
       remainingTime: prayerTimeInMinutes - currentTime,

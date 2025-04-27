@@ -1,6 +1,6 @@
 import React from 'react';
-import Footer from '../components/navbar/footer';
-import Navbar from '../components/navbar/navbar';
+import Navbar from '../../components/navbar/navbar';
+import Footer from '../../components/navbar/footer';
 
 export default function Laporan() {
   // Sample data for financial reports - in a real app, this would come from an API

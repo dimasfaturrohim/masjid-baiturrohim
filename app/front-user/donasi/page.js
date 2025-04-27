@@ -1,7 +1,7 @@
 import React from 'react';
 import { CheckCircleIcon } from '@heroicons/react/24/solid';
-import Navbar from '../components/navbar/navbar';
-import Footer from '../components/navbar/footer';
+import Navbar from '../../components/navbar/navbar';
+import Footer from '../../components/navbar/footer';
 
 export default function Donasi() {
   return (

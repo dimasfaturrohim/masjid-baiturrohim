@@ -7,8 +7,8 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from '@heroicons/react/24/outline';
-import Navbar from '../components/navbar/navbar';
-import Footer from '../components/navbar/footer';
+import Navbar from '../../components/navbar/navbar';
+import Footer from '../../components/navbar/footer';
 
 export default function Kegiatan() {
   // State untuk pagination
