@@ -26,6 +26,19 @@ const nextConfig = {
         source: '/laporan',
         destination: '/front-user/laporan',
       },
+      //Routes for admin
+      {
+        source: '/login',
+        destination: '/front-admin/login',
+      },
+      {
+        source: '/dashboard',
+        destination: '/front-admin/dashboard',
+      },
+      {
+        source: '/kegiatan-admin',
+        destination: '/front-admin/kegiatan-admin',
+      },
     ];
   },
 };
