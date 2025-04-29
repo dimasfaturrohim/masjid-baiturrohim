@@ -13,8 +13,6 @@ import {
 import SidebarAdmin from '@/app/components/navbar/sidebar-admin';
 
 export default function KegiatanAdmin() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
   // Sample data for activities
   const [kegiatan, setKegiatan] = useState([
     {
@@ -87,20 +85,6 @@ export default function KegiatanAdmin() {
     setShowModal(true);
   };
 
-  // Open modal for editing an activity
-  const openEditModal = (id) => {
-    const kegiatanToEdit = kegiatan.find((item) => item.id === id);
-    setIsEdit(true);
-    setCurrentKegiatan(kegiatanToEdit);
-    setShowModal(true);
-  };
-
-  // Open delete confirmation modal
-  const openDeleteModal = (id) => {
-    setDeleteId(id);
-    setShowDeleteModal(true);
-  };
-
   // Submit form handler (add/edit)
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -134,7 +118,7 @@ export default function KegiatanAdmin() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <SidebarAdmin isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <SidebarAdmin />
 
       {/* Main content */}
       <div className="flex-1 flex flex-col">
