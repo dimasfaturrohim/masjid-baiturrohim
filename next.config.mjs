@@ -39,6 +39,18 @@ const nextConfig = {
         source: '/kegiatan-admin',
         destination: '/front-admin/kegiatan-admin',
       },
+      {
+        source: '/kajian-admin',
+        destination: '/front-admin/kajian-admin',
+      },
+      {
+        source: '/donasi-admin',
+        destination: '/front-admin/donasi-admin',
+      },
+      {
+        source: '/pengurus-admin',
+        destination: '/front-admin/pengurus-admin',
+      },
     ];
   },
 };

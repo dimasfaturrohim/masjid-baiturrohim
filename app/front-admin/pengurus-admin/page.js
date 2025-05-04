@@ -5,113 +5,139 @@ import {
   PencilSquareIcon,
   TrashIcon,
   XMarkIcon,
-  CalendarIcon,
-  ClockIcon,
-  MapPinIcon,
   UserIcon,
+  PhoneIcon,
+  EnvelopeIcon,
 } from '@heroicons/react/24/outline';
 import SidebarAdmin from '@/app/components/navbar/sidebar-admin';
 
-export default function KegiatanAdmin() {
-  // Sample data for activities
-  const [kegiatan, setKegiatan] = useState([
+export default function PengurusAdmin() {
+  // Data pengurus dalam Bahasa Indonesia
+  const [pengurus, setPengurus] = useState([
     {
       id: 1,
-      nama: 'Pengajian Rutin Mingguan',
-      tanggal: '2025-05-05',
-      waktu: '19:30',
-      lokasi: 'Masjid Baiturrohim Lt. 1',
-      deskripsi: 'Pengajian rutin mingguan dengan tema Fiqih Kontemporer',
-      penanggungjawab: 'Ust. Ahmad',
+      nama: 'KH. Ahmad Fauzi',
+      jabatan: 'Ketua DKM',
+      foto: 'https://randomuser.me/api/portraits/men/32.jpg',
+      deskripsi: 'Ketua DKM Masjid Baiturrohim periode 2023-2026',
+      telepon: '08123456789',
+      email: 'ahmad.fauzi@example.com',
     },
     {
       id: 2,
-      nama: 'Buka Puasa Bersama',
-      tanggal: '2025-05-12',
-      waktu: '17:45',
-      lokasi: 'Halaman Masjid',
-      deskripsi: 'Buka puasa bersama anak yatim dan duafa sekitar masjid',
-      penanggungjawab: 'H. Budi Santoso',
+      nama: 'H. Budi Santoso',
+      jabatan: 'Wakil Ketua',
+      foto: 'https://randomuser.me/api/portraits/men/41.jpg',
+      deskripsi: 'Wakil Ketua DKM Masjid Baiturrohim periode 2023-2026',
+      telepon: '08123456788',
+      email: 'budi.santoso@example.com',
     },
     {
       id: 3,
-      nama: 'Tabligh Akbar',
-      tanggal: '2025-05-20',
-      waktu: '09:00',
-      lokasi: 'Masjid Baiturrohim',
-      deskripsi: "Tabligh akbar dengan tema Membangun Generasi Qur'ani",
-      penanggungjawab: 'Panitia Ramadhan',
+      nama: 'Drs. Hasan Mahmud',
+      jabatan: 'Sekretaris',
+      foto: 'https://randomuser.me/api/portraits/men/55.jpg',
+      deskripsi: 'Sekretaris DKM Masjid Baiturrohim periode 2023-2026',
+      telepon: '08123456787',
+      email: 'hasan.mahmud@example.com',
+    },
+    {
+      id: 4,
+      nama: 'H. Slamet Riyadi',
+      jabatan: 'Bendahara',
+      foto: 'https://randomuser.me/api/portraits/men/61.jpg',
+      deskripsi: 'Bendahara DKM Masjid Baiturrohim periode 2023-2026',
+      telepon: '08123456786',
+      email: 'slamet.riyadi@example.com',
+    },
+    {
+      id: 5,
+      nama: 'Ustadz Abdul Rahman',
+      jabatan: 'Imam Besar',
+      foto: 'https://randomuser.me/api/portraits/men/72.jpg',
+      deskripsi: 'Imam Besar Masjid Baiturrohim',
+      telepon: '08123456785',
+      email: 'abdul.rahman@example.com',
+    },
+    {
+      id: 6,
+      nama: 'Ustadz Farhan Zakaria',
+      jabatan: 'Koordinator Dakwah',
+      foto: 'https://randomuser.me/api/portraits/men/83.jpg',
+      deskripsi: 'Koordinator bidang dakwah dan kajian',
+      telepon: '08123456784',
+      email: 'farhan.zakaria@example.com',
     },
   ]);
 
-  // State for modal and form
+  // State untuk modal dan form
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [currentKegiatan, setCurrentKegiatan] = useState({
+  const [currentPengurus, setCurrentPengurus] = useState({
     id: null,
     nama: '',
-    tanggal: '',
-    waktu: '',
-    lokasi: '',
+    jabatan: '',
+    foto: '',
     deskripsi: '',
-    penanggungjawab: '',
+    telepon: '',
+    email: '',
   });
 
-  // Delete confirmation modal
+  // Modal konfirmasi hapus
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
-  // Handle input change
+  // Handle perubahan input
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCurrentKegiatan({
-      ...currentKegiatan,
+    setCurrentPengurus({
+      ...currentPengurus,
       [name]: value,
     });
   };
 
-  // Open modal for adding new activity
+  // Buka modal untuk tambah pengurus baru
   const openAddModal = () => {
     setIsEdit(false);
-    setCurrentKegiatan({
+    setCurrentPengurus({
       id: null,
       nama: '',
-      tanggal: '',
-      waktu: '',
-      lokasi: '',
+      jabatan: '',
+      foto: '',
       deskripsi: '',
-      penanggungjawab: '',
+      telepon: '',
+      email: '',
     });
     setShowModal(true);
   };
 
-  // Submit form handler (add/edit)
+  // Handler submit form (tambah/edit)
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (isEdit) {
-      // Update existing activity
-      setKegiatan(
-        kegiatan.map((item) =>
-          item.id === currentKegiatan.id ? currentKegiatan : item
+      // Update pengurus yang sudah ada
+      setPengurus(
+        pengurus.map((item) =>
+          item.id === currentPengurus.id ? currentPengurus : item
         )
       );
     } else {
-      // Add new activity with a generated ID
+      // Tambah pengurus baru dengan ID yang digenerate
       const newId =
-        kegiatan.length > 0
-          ? Math.max(...kegiatan.map((item) => item.id)) + 1
+        pengurus.length > 0
+          ? Math.max(...pengurus.map((item) => item.id)) + 1
           : 1;
-      setKegiatan([...kegiatan, { ...currentKegiatan, id: newId }]);
+      setPengurus([...pengurus, { ...currentPengurus, id: newId }]);
     }
 
-    // Close modal
+    // Tutup modal
     setShowModal(false);
   };
 
-  // Delete activity handler
+  // Handler hapus pengurus
   const handleDelete = () => {
-    setKegiatan(kegiatan.filter((item) => item.id !== deleteId));
+    setPengurus(pengurus.filter((item) => item.id !== deleteId));
     setShowDeleteModal(false);
   };
 
@@ -120,17 +146,17 @@ export default function KegiatanAdmin() {
       {/* Sidebar */}
       <SidebarAdmin />
 
-      {/* Main content */}
+      {/* Konten utama */}
       <div className="flex-1 flex flex-col">
         <main className="flex-1 p-6 md:p-8 overflow-x-auto">
-          {/* Page Header - wrapped in a min-width container */}
+          {/* Header halaman */}
           <div className="flex justify-between items-center mb-6 min-w-max">
             <div>
               <h1 className="text-2xl font-bold text-gray-800">
-                Manajemen Kegiatan
+                Manajemen Pengurus
               </h1>
               <p className="text-gray-500 mt-1">
-                Kelola semua kegiatan Masjid Baiturrohim
+                Kelola data pengurus Masjid Baiturrohim
               </p>
             </div>
             <button
@@ -138,34 +164,31 @@ export default function KegiatanAdmin() {
               className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center shadow-sm transition-colors whitespace-nowrap"
             >
               <PlusIcon className="h-5 w-5 mr-1" />
-              Tambah Kegiatan
+              Tambah Pengurus
             </button>
           </div>
 
-          {/* Main Card with overflow handling */}
+          {/* Card utama dengan handling overflow */}
           <div className="bg-white rounded-xl shadow-sm overflow-hidden min-w-[40rem]">
-            {/* Card Header */}
+            {/* Header card */}
             <div className="px-6 py-4 border-b border-gray-100">
-              <h2 className="font-semibold text-gray-800">Daftar Kegiatan</h2>
+              <h2 className="font-semibold text-gray-800">Daftar Pengurus</h2>
             </div>
 
-            {/* Table with improved overflow handling */}
-            {kegiatan.length > 0 ? (
+            {/* Tabel dengan handling overflow yang diperbaiki */}
+            {pengurus.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Nama Kegiatan
+                        Pengurus
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Tanggal & Waktu
+                        Jabatan
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Lokasi
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Penanggung Jawab
+                        Kontak
                       </th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Aksi
@@ -173,46 +196,47 @@ export default function KegiatanAdmin() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {kegiatan.map((item) => (
+                    {pengurus.map((item) => (
                       <tr key={item.id}>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="font-medium text-gray-900">
-                            {item.nama}
-                          </div>
-                          <div className="text-sm text-gray-500 mt-1 line-clamp-2">
-                            {item.deskripsi}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center text-gray-900 mb-1">
-                            <CalendarIcon className="h-4 w-4 mr-1 text-gray-500" />
-                            {new Date(item.tanggal).toLocaleDateString(
-                              'id-ID',
-                              { day: 'numeric', month: 'long', year: 'numeric' }
-                            )}
-                          </div>
-                          <div className="flex items-center text-gray-500">
-                            <ClockIcon className="h-4 w-4 mr-1" />
-                            {item.waktu}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center space-x-4">
+                            <img
+                              src={item.foto}
+                              alt={item.nama}
+                              className="w-12 h-12 rounded-full object-cover border border-gray-200"
+                            />
+                            <div>
+                              <div className="font-medium text-gray-900">
+                                {item.nama}
+                              </div>
+                              <div className="text-sm text-gray-500 mt-1 line-clamp-2">
+                                {item.deskripsi}
+                              </div>
+                            </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <MapPinIcon className="h-4 w-4 mr-1 text-gray-500" />
-                            <span>{item.lokasi}</span>
-                          </div>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {item.jabatan}
+                          </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <UserIcon className="h-4 w-4 mr-1 text-gray-500" />
-                            <span>{item.penanggungjawab}</span>
+                          <div className="flex flex-col space-y-1">
+                            <div className="flex items-center text-sm text-gray-500">
+                              <PhoneIcon className="h-4 w-4 mr-1" />
+                              {item.telepon}
+                            </div>
+                            <div className="flex items-center text-sm text-gray-500">
+                              <EnvelopeIcon className="h-4 w-4 mr-1" />
+                              {item.email}
+                            </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <button
                             onClick={() => {
                               setIsEdit(true);
-                              setCurrentKegiatan(item);
+                              setCurrentPengurus(item);
                               setShowModal(true);
                             }}
                             className="text-blue-600 hover:text-blue-900 mr-3"
@@ -236,12 +260,12 @@ export default function KegiatanAdmin() {
               </div>
             ) : (
               <div className="py-12 text-center text-gray-500">
-                <p>Belum ada data kegiatan yang tersedia.</p>
+                <p>Belum ada data pengurus yang tersedia.</p>
                 <button
                   onClick={openAddModal}
                   className="mt-3 text-green-600 hover:text-green-800"
                 >
-                  Tambah Kegiatan Pertama
+                  Tambah Pengurus Pertama
                 </button>
               </div>
             )}
@@ -249,13 +273,13 @@ export default function KegiatanAdmin() {
         </main>
       </div>
 
-      {/* Add/Edit Kegiatan Modal */}
+      {/* Modal Tambah/Edit Pengurus */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl mx-auto overflow-hidden">
             <div className="flex justify-between items-center p-6 border-b border-gray-100">
               <h3 className="text-xl font-semibold text-gray-800">
-                {isEdit ? 'Edit Kegiatan' : 'Tambah Kegiatan Baru'}
+                {isEdit ? 'Edit Pengurus' : 'Tambah Pengurus Baru'}
               </h3>
               <button
                 onClick={() => setShowModal(false)}
@@ -269,40 +293,12 @@ export default function KegiatanAdmin() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Nama Kegiatan
+                    Nama Lengkap
                   </label>
                   <input
                     type="text"
                     name="nama"
-                    value={currentKegiatan.nama}
-                    onChange={handleInputChange}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Tanggal
-                  </label>
-                  <input
-                    type="date"
-                    name="tanggal"
-                    value={currentKegiatan.tanggal}
-                    onChange={handleInputChange}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Waktu
-                  </label>
-                  <input
-                    type="time"
-                    name="waktu"
-                    value={currentKegiatan.waktu}
+                    value={currentPengurus.nama}
                     onChange={handleInputChange}
                     className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     required
@@ -311,12 +307,12 @@ export default function KegiatanAdmin() {
 
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Lokasi
+                    Jabatan
                   </label>
                   <input
                     type="text"
-                    name="lokasi"
-                    value={currentKegiatan.lokasi}
+                    name="jabatan"
+                    value={currentPengurus.jabatan}
                     onChange={handleInputChange}
                     className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     required
@@ -325,28 +321,66 @@ export default function KegiatanAdmin() {
 
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Deskripsi Kegiatan
+                    URL Foto
+                  </label>
+                  <input
+                    type="url"
+                    name="foto"
+                    value={currentPengurus.foto}
+                    onChange={handleInputChange}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    required
+                    placeholder="https://example.com/foto.jpg"
+                  />
+                  {currentPengurus.foto && (
+                    <div className="mt-2">
+                      <img
+                        src={currentPengurus.foto}
+                        alt="Preview"
+                        className="w-16 h-16 object-cover rounded-full border border-gray-200"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Deskripsi
                   </label>
                   <textarea
                     name="deskripsi"
-                    value={currentKegiatan.deskripsi}
+                    value={currentPengurus.deskripsi}
                     onChange={handleInputChange}
                     rows="3"
                     className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   ></textarea>
                 </div>
 
-                <div className="col-span-2">
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Penanggung Jawab
+                    Nomor Telepon
                   </label>
                   <input
-                    type="text"
-                    name="penanggungjawab"
-                    value={currentKegiatan.penanggungjawab}
+                    type="tel"
+                    name="telepon"
+                    value={currentPengurus.telepon}
                     onChange={handleInputChange}
                     className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    required
+                    placeholder="08123456789"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={currentPengurus.email}
+                    onChange={handleInputChange}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    placeholder="nama@example.com"
                   />
                 </div>
               </div>
@@ -363,7 +397,7 @@ export default function KegiatanAdmin() {
                   type="submit"
                   className="px-4 py-2 bg-green-600 rounded-lg text-white hover:bg-green-700 transition-colors"
                 >
-                  {isEdit ? 'Simpan Perubahan' : 'Tambah Kegiatan'}
+                  {isEdit ? 'Simpan Perubahan' : 'Tambah Pengurus'}
                 </button>
               </div>
             </form>
@@ -371,7 +405,7 @@ export default function KegiatanAdmin() {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Modal Konfirmasi Hapus */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-md mx-auto overflow-hidden">
@@ -380,8 +414,8 @@ export default function KegiatanAdmin() {
                 Konfirmasi Hapus
               </h3>
               <p className="text-gray-600">
-                Apakah Anda yakin ingin menghapus kegiatan ini? Tindakan ini
-                tidak dapat dibatalkan.
+                Apakah Anda yakin ingin menghapus data pengurus ini? Tindakan
+                ini tidak dapat dibatalkan.
               </p>
 
               <div className="mt-6 flex justify-end space-x-3">
