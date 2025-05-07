@@ -76,8 +76,7 @@ export default function Beranda() {
       const month = date.getMonth() + 1;
       const year = date.getFullYear();
 
-      const url = `http://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=11`; // Method 11 for Indonesia
-
+      const url = `https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=11`;
       const response = await fetch(url);
       const data = await response.json();
 

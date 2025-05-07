@@ -28,12 +28,7 @@ export default function AdminDashboard() {
     const isLoggedIn = localStorage.getItem('adminLoggedIn');
     if (!isLoggedIn) {
       router.push('/login');
-    } else {
-      // Fetch admin name (example)
-      const storedName = localStorage.getItem('adminName');
-      if (storedName) setAdminName(storedName);
     }
-
     // Set greeting based on time of day
     const hour = new Date().getHours();
     if (hour < 12) setGreeting('Selamat Pagi');

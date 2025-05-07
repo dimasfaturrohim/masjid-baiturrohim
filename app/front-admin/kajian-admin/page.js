@@ -13,8 +13,17 @@ import {
   VideoCameraIcon,
 } from '@heroicons/react/24/outline';
 import SidebarAdmin from '@/app/components/navbar/sidebar-admin';
-
+import { useRouter } from 'next/navigation';
 export default function KajianAdmin() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Cek auth saat komponen dimount
+    const isLoggedIn = localStorage.getItem('adminLoggedIn');
+    if (!isLoggedIn) {
+      router.push('/login');
+    }
+  }, []);
   // Data kajian dalam Bahasa Indonesia
   const [kajian, setKajian] = useState([
     {

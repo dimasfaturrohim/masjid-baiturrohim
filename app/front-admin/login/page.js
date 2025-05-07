@@ -6,20 +6,50 @@ export default function AdminLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
-    // Contoh validasi sederhana (ganti dengan sistem autentikasi yang sebenarnya)
-    if (username === 'admin' && password === 'password123') {
-      // Simpan status login di localStorage atau dengan cookies/session
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login gagal');
+      }
+
+      // Set token in cookie first - this is crucial for middleware auth
+      document.cookie = `token=${data.token}; path=/; max-age=${
+        7 * 24 * 60 * 60
+      }; SameSite=Lax`;
+
+      // Then set localStorage items
+      localStorage.setItem('adminToken', data.token);
+      localStorage.setItem('adminUser', JSON.stringify(data.user));
       localStorage.setItem('adminLoggedIn', 'true');
-      // Redirect ke dashboard admin
-      router.push('/dashboard');
-    } else {
-      setError('Username atau password salah');
+
+      console.log('Login successful, redirecting to dashboard...');
+
+      // Add a small delay to ensure cookie is set before navigation
+      setTimeout(() => {
+        // Use absolute URL to ensure proper routing through server
+        router.push('/dashboard');
+      }, 500);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
