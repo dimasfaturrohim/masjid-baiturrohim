@@ -15,3 +15,40 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Kegiatan {
+  id               Int      @id @default(autoincrement())
+  nama             String
+  tanggal          DateTime
+  waktu            String
+  lokasi           String
+  deskripsi        String?
+  penanggungjawab  String
+  content          String? 
+  imageUrl         String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Kajian {
+  id               Int      @id @default(autoincrement())
+  judul            String
+  tanggal          DateTime
+  waktu            String
+  deskripsi        String?
+  imageUrl         String?
+  linkYoutube      String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Donasi {
+  id               Int      @id @default(autoincrement())
+  nama_donatur     String
+  tanggal          DateTime
+  nominal          Decimal @db.Decimal(15, 2)
+  deskripsi        String?
+  status           String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}

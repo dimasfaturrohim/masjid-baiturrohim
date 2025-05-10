@@ -14,90 +14,79 @@ import {
 } from '@heroicons/react/24/outline';
 import SidebarAdmin from '@/app/components/navbar/sidebar-admin';
 import { useRouter } from 'next/navigation';
+import LoadingModal from '@/app/components/modal/loading-modal';
+
 export default function DonasiAdmin() {
   const router = useRouter();
+
+  // States for data and UI
+  const [donasi, setDonasi] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // State for modal and form
+  const [showModal, setShowModal] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [currentDonasi, setCurrentDonasi] = useState({
+    id: null,
+    nama_donatur: '',
+    tanggal: '',
+    nominal: '',
+    deskripsi: '',
+    status: 'Menunggu',
+  });
+
+  // Delete confirmation modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     // Cek auth saat komponen dimount
     const isLoggedIn = localStorage.getItem('adminLoggedIn');
     if (!isLoggedIn) {
       router.push('/login');
+    } else {
+      fetchDonasi();
     }
   }, []);
-  // Data donasi dalam Bahasa Indonesia
-  const [donasi, setDonasi] = useState([
-    {
-      id: 1,
-      nama: 'Ahmad Fadli',
-      jumlah: 500000,
-      tanggal: '2025-05-01',
-      keterangan: 'Donasi untuk pembangunan masjid',
-      status: 'Terverifikasi',
-    },
-    {
-      id: 2,
-      nama: 'Budi Santoso',
-      jumlah: 1000000,
-      tanggal: '2025-04-28',
-      keterangan: 'Donasi rutin bulanan',
-      status: 'Terverifikasi',
-    },
-    {
-      id: 3,
-      nama: 'Siti Rahma',
-      jumlah: 250000,
-      tanggal: '2025-04-25',
-      keterangan: 'Donasi untuk kegiatan ramadhan',
-      status: 'Terverifikasi',
-    },
-    {
-      id: 4,
-      nama: 'Hasan Mahmud',
-      jumlah: 750000,
-      tanggal: '2025-04-20',
-      keterangan: 'Donasi untuk operasional masjid',
-      status: 'Terverifikasi',
-    },
-    {
-      id: 5,
-      nama: 'Dewi Putriani',
-      jumlah: 350000,
-      tanggal: '2025-04-15',
-      keterangan: 'Donasi untuk kegiatan anak-anak',
-      status: 'Menunggu',
-    },
-    {
-      id: 6,
-      nama: 'Farhan Adityatama',
-      jumlah: 2500000,
-      tanggal: '2025-04-10',
-      keterangan: 'Donasi untuk pembangunan perpustakaan',
-      status: 'Terverifikasi',
-    },
-  ]);
 
-  // State untuk modal dan form
-  const [showModal, setShowModal] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [currentDonasi, setCurrentDonasi] = useState({
-    id: null,
-    nama: '',
-    jumlah: '',
-    tanggal: '',
-    keterangan: '',
-    status: 'Menunggu',
-  });
+  // Fetch data donasi
+  const fetchDonasi = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/donasi');
 
-  // Modal konfirmasi hapus
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteId, setDeleteId] = useState(null);
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      const data = await response.json();
+
+      // Format tanggal untuk form input
+      const formattedData = data.map((item) => ({
+        ...item,
+        tanggal: new Date(item.tanggal).toISOString().split('T')[0],
+        // Convert Decimal to number for form handling
+        nominal: Number(item.nominal),
+      }));
+
+      setDonasi(formattedData);
+    } catch (err) {
+      console.error('Error fetching donasi:', err);
+      setError('Gagal mengambil data donasi');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Handle perubahan input
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCurrentDonasi({
       ...currentDonasi,
-      [name]: name === 'jumlah' ? (value === '' ? '' : Number(value)) : value,
+      [name]: name === 'nominal' ? (value === '' ? '' : Number(value)) : value,
     });
   };
 
@@ -106,41 +95,92 @@ export default function DonasiAdmin() {
     setIsEdit(false);
     setCurrentDonasi({
       id: null,
-      nama: '',
-      jumlah: '',
+      nama_donatur: '',
       tanggal: '',
-      keterangan: '',
+      nominal: '',
+      deskripsi: '',
       status: 'Menunggu',
     });
     setShowModal(true);
   };
 
   // Handler submit form (tambah/edit)
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    if (isEdit) {
-      // Update donasi yang sudah ada
-      setDonasi(
-        donasi.map((item) =>
-          item.id === currentDonasi.id ? currentDonasi : item
-        )
-      );
-    } else {
-      // Tambah donasi baru dengan ID yang digenerate
-      const newId =
-        donasi.length > 0 ? Math.max(...donasi.map((item) => item.id)) + 1 : 1;
-      setDonasi([...donasi, { ...currentDonasi, id: newId }]);
+    try {
+      const payload = {
+        nama_donatur: currentDonasi.nama_donatur,
+        tanggal: currentDonasi.tanggal,
+        nominal: currentDonasi.nominal,
+        deskripsi: currentDonasi.deskripsi,
+        status: currentDonasi.status,
+      };
+
+      if (isEdit) {
+        // Update existing donasi
+        const response = await fetch(`/api/donasi/${currentDonasi.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update donasi');
+        }
+      } else {
+        // Add new donasi
+        const response = await fetch('/api/donasi', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to create donasi');
+        }
+      }
+
+      // Refresh the data
+      fetchDonasi();
+
+      // Close modal
+      setShowModal(false);
+    } catch (err) {
+      console.error('Error in submit:', err);
+      alert(err.message);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // Tutup modal
-    setShowModal(false);
   };
 
   // Handler hapus donasi
-  const handleDelete = () => {
-    setDonasi(donasi.filter((item) => item.id !== deleteId));
-    setShowDeleteModal(false);
+  const handleDelete = async () => {
+    setIsDeleting(true);
+
+    try {
+      const response = await fetch(`/api/donasi/${deleteId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete donasi');
+      }
+
+      // Remove from state
+      setDonasi(donasi.filter((item) => item.id !== deleteId));
+      setShowDeleteModal(false);
+    } catch (err) {
+      console.error('Error deleting donasi:', err);
+      alert(err.message);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   // Format jumlah sebagai mata uang Rupiah
@@ -151,6 +191,41 @@ export default function DonasiAdmin() {
       minimumFractionDigits: 0,
     }).format(amount);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen bg-gray-50">
+        <SidebarAdmin />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+            <p className="mt-3 text-gray-600">Memuat data donasi...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Render error state
+  if (error) {
+    return (
+      <div className="flex min-h-screen bg-gray-50">
+        <SidebarAdmin />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-red-600 text-xl mb-2">⚠️ Error</div>
+            <p className="text-gray-600">{error}</p>
+            <button
+              onClick={fetchDonasi}
+              className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            >
+              Coba Lagi
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -215,17 +290,17 @@ export default function DonasiAdmin() {
                           <div className="flex items-start">
                             <div>
                               <div className="font-medium text-gray-900">
-                                {item.nama}
+                                {item.nama_donatur}
                               </div>
                               <div className="text-sm text-gray-500 mt-1 line-clamp-2">
-                                {item.keterangan}
+                                {item.deskripsi || '-'}
                               </div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="font-medium text-gray-900">
-                            {formatRupiah(item.jumlah)}
+                            {formatRupiah(item.nominal)}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -301,148 +376,216 @@ export default function DonasiAdmin() {
 
       {/* Modal Tambah/Edit Donasi */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl mx-auto overflow-hidden">
-            <div className="flex justify-between items-center p-6 border-b border-gray-100">
-              <h3 className="text-xl font-semibold text-gray-800">
-                {isEdit ? 'Edit Donasi' : 'Tambah Donasi Baru'}
-              </h3>
-              <button
-                onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <XMarkIcon className="h-6 w-6" />
-              </button>
-            </div>
+        <div
+          className="fixed inset-0 z-50 overflow-y-auto"
+          aria-labelledby="modal-title"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="fixed inset-0 transition-opacity"
+            onClick={() => setShowModal(false)}
+          ></div>
 
-            <form onSubmit={handleSubmit} className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Nama Donatur
-                  </label>
-                  <input
-                    type="text"
-                    name="nama"
-                    value={currentDonasi.nama}
-                    onChange={handleInputChange}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Jumlah Donasi (Rp)
-                  </label>
-                  <input
-                    type="number"
-                    name="jumlah"
-                    value={currentDonasi.jumlah}
-                    onChange={handleInputChange}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    required
-                    min="1000"
-                    step="1000"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Tanggal
-                  </label>
-                  <input
-                    type="date"
-                    name="tanggal"
-                    value={currentDonasi.tanggal}
-                    onChange={handleInputChange}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Status
-                  </label>
-                  <select
-                    name="status"
-                    value={currentDonasi.status}
-                    onChange={handleInputChange}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    required
-                  >
-                    <option value="Menunggu">Menunggu</option>
-                    <option value="Terverifikasi">Terverifikasi</option>
-                  </select>
-                </div>
-
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Keterangan
-                  </label>
-                  <textarea
-                    name="keterangan"
-                    value={currentDonasi.keterangan}
-                    onChange={handleInputChange}
-                    rows="3"
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    placeholder="Tujuan donasi atau catatan lainnya"
-                  ></textarea>
-                </div>
-              </div>
-
-              <div className="mt-8 flex justify-end space-x-3">
+          <div className="flex items-center justify-center min-h-screen p-4">
+            <div
+              className="relative bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="border-l-4 border-green-600 bg-white px-4 py-3 flex items-center justify-between">
+                <h3 className="text-lg font-medium text-gray-900">
+                  {isEdit ? 'Edit Donasi' : 'Tambah Donasi Baru'}
+                </h3>
                 <button
-                  type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
                 >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-green-600 rounded-lg text-white hover:bg-green-700 transition-colors"
-                >
-                  {isEdit ? 'Simpan Perubahan' : 'Tambah Donasi'}
+                  <XMarkIcon className="h-5 w-5" />
                 </button>
               </div>
-            </form>
+
+              <form onSubmit={handleSubmit}>
+                <div className="p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Nama Donatur
+                      </label>
+                      <input
+                        type="text"
+                        name="nama_donatur"
+                        value={currentDonasi.nama_donatur}
+                        onChange={handleInputChange}
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-green-500 focus:border-green-500 transition-colors text-sm"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Nominal (Rp)
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+                          <BanknotesIcon className="h-4 w-4 text-gray-400" />
+                        </div>
+                        <input
+                          type="number"
+                          name="nominal"
+                          value={currentDonasi.nominal}
+                          onChange={handleInputChange}
+                          className="w-full rounded-md border border-gray-300 pl-8 pr-3 py-2 focus:ring-1 focus:ring-green-500 focus:border-green-500 transition-colors text-sm"
+                          required
+                          min="1000"
+                          step="1000"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Tanggal
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+                          <CalendarIcon className="h-4 w-4 text-gray-400" />
+                        </div>
+                        <input
+                          type="date"
+                          name="tanggal"
+                          value={currentDonasi.tanggal}
+                          onChange={handleInputChange}
+                          className="w-full rounded-md border border-gray-300 pl-8 pr-3 py-2 focus:ring-1 focus:ring-green-500 focus:border-green-500 transition-colors text-sm"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Status
+                      </label>
+                      <select
+                        name="status"
+                        value={currentDonasi.status}
+                        onChange={handleInputChange}
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-green-500 focus:border-green-500 transition-colors text-sm"
+                        required
+                      >
+                        <option value="Menunggu">Menunggu</option>
+                        <option value="Terverifikasi">Terverifikasi</option>
+                      </select>
+                    </div>
+
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Deskripsi
+                      </label>
+                      <textarea
+                        name="deskripsi"
+                        value={currentDonasi.deskripsi || ''}
+                        onChange={handleInputChange}
+                        rows="3"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-green-500 focus:border-green-500 transition-colors text-sm"
+                        placeholder="Tujuan donasi atau catatan lainnya"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer form */}
+                <div className="bg-gray-50 px-4 py-3 flex items-center justify-end space-x-2 text-sm">
+                  <button
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                    className="px-3 py-1.5 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors shadow-sm font-medium"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-3 py-1.5 bg-green-600 rounded-md text-white hover:bg-green-700 transition-colors shadow-sm font-medium flex items-center"
+                  >
+                    {isEdit ? (
+                      <>
+                        <PencilSquareIcon className="h-3.5 w-3.5 mr-1" />
+                        Simpan
+                      </>
+                    ) : (
+                      <>
+                        <PlusIcon className="h-3.5 w-3.5 mr-1" />
+                        Tambah
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
 
       {/* Modal Konfirmasi Hapus */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-lg w-full max-w-md mx-auto overflow-hidden">
-            <div className="p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                Konfirmasi Hapus
-              </h3>
-              <p className="text-gray-600">
-                Apakah Anda yakin ingin menghapus donasi ini? Tindakan ini tidak
-                dapat dibatalkan.
-              </p>
+        <div
+          className="fixed inset-0 z-50 overflow-y-auto"
+          aria-labelledby="modal-title"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="fixed inset-0 transition-opacity"
+            onClick={() => setShowDeleteModal(false)}
+          ></div>
 
-              <div className="mt-6 flex justify-end space-x-3">
-                <button
-                  onClick={() => setShowDeleteModal(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                >
-                  Batal
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className="px-4 py-2 bg-red-600 rounded-lg text-white hover:bg-red-700 transition-colors"
-                >
-                  Ya, Hapus
-                </button>
+          <div className="flex items-center justify-center min-h-screen p-4">
+            <div
+              className="relative bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="border-l-4 border-red-500 p-4">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-8 w-8 rounded-full bg-red-100">
+                      <TrashIcon className="h-4 w-4 text-red-600" />
+                    </div>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-base font-medium text-gray-900">
+                      Konfirmasi Hapus
+                    </h3>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Apakah Anda yakin ingin menghapus donasi ini?
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex justify-end space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteModal(false)}
+                    className="px-3 py-1.5 text-sm border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors shadow-sm font-medium"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    className="px-3 py-1.5 text-sm bg-red-600 rounded-md text-white hover:bg-red-700 transition-colors shadow-sm font-medium flex items-center"
+                  >
+                    <TrashIcon className="h-3.5 w-3.5 mr-1" />
+                    Hapus
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       )}
+
+      {/* Loading modals */}
+      <LoadingModal isOpen={isSubmitting} type={isEdit ? 'submit' : 'add'} />
+      <LoadingModal isOpen={isDeleting} type="delete" />
     </div>
   );
 }

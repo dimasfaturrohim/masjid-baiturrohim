@@ -141,7 +141,7 @@ export default function AdminDashboard() {
                 Tambah, edit, atau hapus jadwal kajian dan materi
               </p>
               <button
-                onClick={() => router.push('/front-admin/kajian')}
+                onClick={() => router.push('/kajian-admin')}
                 className="w-full py-2 px-4 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium text-sm flex items-center justify-center"
               >
                 Kelola Kajian
@@ -159,7 +159,7 @@ export default function AdminDashboard() {
                 Atur jadwal dan informasi kegiatan masjid
               </p>
               <button
-                onClick={() => router.push('/front-admin/kegiatan')}
+                onClick={() => router.push('/kegiatan-admin')}
                 className="w-full py-2 px-4 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors font-medium text-sm flex items-center justify-center"
               >
                 Kelola Kegiatan
@@ -177,7 +177,7 @@ export default function AdminDashboard() {
                 Lihat dan kelola laporan donasi masjid
               </p>
               <button
-                onClick={() => router.push('/front-admin/donasi')}
+                onClick={() => router.push('/donasi-admin')}
                 className="w-full py-2 px-4 bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-100 transition-colors font-medium text-sm flex items-center justify-center"
               >
                 Kelola Donasi
@@ -195,7 +195,7 @@ export default function AdminDashboard() {
                 Tambah, edit, atau hapus data pengurus masjid
               </p>
               <button
-                onClick={() => router.push('/front-admin/pengurus')}
+                onClick={() => router.push('/pengurus-admin')}
                 className="w-full py-2 px-4 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors font-medium text-sm flex items-center justify-center"
               >
                 Kelola Pengurus
@@ -213,7 +213,7 @@ export default function AdminDashboard() {
                 Kelola laporan pemasukan dan pengeluaran masjid
               </p>
               <button
-                onClick={() => router.push('/front-admin/keuangan')}
+                onClick={() => router.push('/keuangan')}
                 className="w-full py-2 px-4 bg-teal-50 text-teal-600 rounded-lg hover:bg-teal-100 transition-colors font-medium text-sm flex items-center justify-center"
               >
                 Kelola Keuangan
