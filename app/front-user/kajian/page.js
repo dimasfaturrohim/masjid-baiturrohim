@@ -17,110 +17,106 @@ export default function Kajian() {
   const videosPerPage = 6;
   const [activeTab, setActiveTab] = useState('semua');
 
-  // Simulasi loading state
+  // Loading and error states
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Data states
+  const [allKajianData, setAllKajianData] = useState([]);
+  const [mainVideo, setMainVideo] = useState(null);
+
+  // Fetch kajian data from the backend
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-    return () => clearTimeout(timer);
+    const fetchKajianData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/kajian');
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch kajian data');
+        }
+
+        const data = await response.json();
+
+        const formatExternalUrl = (url) => {
+          if (!url) return '#';
+
+          url = url.trim();
+
+          if (url.startsWith('http://') || url.startsWith('https://')) {
+            return url;
+          }
+
+          while (url.startsWith('/')) {
+            url = url.substring(1);
+          }
+
+          return `https://${url}`;
+        };
+
+        if (data && data.length > 0) {
+          // Transform API data to match the expected format for display
+          const formattedKajian = data.map((item) => ({
+            id: item.id,
+            title: item.judul,
+            description: item.deskripsi || 'Kajian Masjid Baiturrohim',
+            thumbnail:
+              item.imageUrl ||
+              'https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg', // Fallback image
+            // More robust URL handling
+            link: item.linkYoutube ? formatExternalUrl(item.linkYoutube) : '#',
+            date: new Date(item.tanggal).toLocaleDateString('id-ID', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            }),
+            duration: '45:00', // Default duration if not provided
+            speaker: 'Ustadz', // Default speaker if not provided
+            category: getCategoryFromTime(item.waktu), // Derive category from time
+          }));
+
+          setAllKajianData(formattedKajian);
+
+          // Set main video to the most recent kajian
+          setMainVideo({
+            ...formattedKajian[0],
+            speaker: 'Ustadz', // Default speaker if not provided
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching kajian data:', err);
+        setError('Gagal memuat data kajian');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchKajianData();
   }, []);
 
-  const mainVideo = {
-    title: 'Kajian Utama: Pentingnya Keikhlasan dalam Ibadah',
-    description:
-      'Kajian utama yang dibawakan oleh Ustadz Ahmad tentang pentingnya keikhlasan dalam ibadah sehari-hari.',
-    thumbnail: 'https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg',
-    link: 'https://www.youtube.com/watch?v=8Gy1pQQoElA',
-    date: '15 April 2025',
-    duration: '45:12',
-    speaker: 'Ustadz Ahmad',
+  // Helper function to determine category based on time
+  const getCategoryFromTime = (time) => {
+    if (!time) return 'khusus';
+
+    const hour = parseInt(time.split(':')[0]);
+
+    if (hour >= 3 && hour < 6) return 'subuh';
+    if (hour >= 11 && hour < 14) return 'dzuhur';
+    if (hour >= 17 && hour < 19) return 'magrib';
+    if (hour >= 19 || hour < 3) return 'isya';
+    return 'khusus';
   };
 
-  const videos = [
-    {
-      title: 'Kajian Subuh: Pentingnya Keikhlasan',
-      description:
-        'Ustadz Ahmad memberikan kajian tentang keikhlasan dalam ibadah.',
-      thumbnail: 'https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg',
-      link: 'https://www.youtube.com/@masjidaljabbar',
-      category: 'subuh',
-      date: '12 April 2025',
-      duration: '32:15',
-      speaker: 'Ustadz Ahmad',
-    },
-    {
-      title: 'Kajian Dzuhur: Menjaga Lisan',
-      description:
-        'Kajian tentang pentingnya menjaga lisan dalam kehidupan sehari-hari.',
-      thumbnail: 'https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg',
-      link: 'https://www.youtube.com/@masjidaljabbar',
-      category: 'dzuhur',
-      date: '10 April 2025',
-      duration: '28:45',
-      speaker: 'Ustadz Budi',
-    },
-    {
-      title: 'Kajian Magrib: Memaafkan dan Melupakan',
-      description:
-        'Kajian tentang pentingnya memaafkan dan melupakan kesalahan orang lain.',
-      thumbnail: 'https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg',
-      link: 'https://www.youtube.com/@masjidaljabbar',
-      category: 'magrib',
-      date: '8 April 2025',
-      duration: '35:20',
-      speaker: 'Ustadz Hasan',
-    },
-    {
-      title: 'Kajian Subuh: Berkah Shalat Subuh',
-      description:
-        'Kajian tentang berkah dan keutamaan shalat subuh berjamaah.',
-      thumbnail: 'https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg',
-      link: 'https://www.youtube.com/@masjidaljabbar',
-      category: 'subuh',
-      date: '5 April 2025',
-      duration: '30:18',
-      speaker: 'Ustadz Ahmad',
-    },
-    {
-      title: 'Kajian Isya: Makna Sabar dalam Islam',
-      description: 'Ustadz Farhan membahas makna sabar dalam perspektif Islam.',
-      thumbnail: 'https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg',
-      link: 'https://www.youtube.com/@masjidaljabbar',
-      category: 'isya',
-      date: '2 April 2025',
-      duration: '40:05',
-      speaker: 'Ustadz Farhan',
-    },
-    {
-      title: 'Kajian Dzuhur: Keutamaan Sedekah',
-      description:
-        'Pembahasan tentang keutamaan sedekah dan balasannya di dunia dan akhirat.',
-      thumbnail: 'https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg',
-      link: 'https://www.youtube.com/@masjidaljabbar',
-      category: 'dzuhur',
-      date: '1 April 2025',
-      duration: '25:35',
-      speaker: 'Ustadz Budi',
-    },
-    {
-      title: 'Kajian Khusus: Persiapan Ramadhan',
-      description:
-        'Kajian khusus tentang persiapan spiritual dan fisik menyambut bulan Ramadhan.',
-      thumbnail: 'https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg',
-      link: 'https://www.youtube.com/@masjidaljabbar',
-      category: 'khusus',
-      date: '25 Maret 2025',
-      duration: '50:12',
-      speaker: 'Ustadz Ahmad',
-    },
-  ];
-
-  // Filter videos berdasarkan kategori tab
+  // Filter videos based on the selected tab
   const filteredVideos =
     activeTab === 'semua'
-      ? videos
-      : videos.filter((video) => video.category === activeTab);
+      ? allKajianData
+      : allKajianData.filter((video) => video.category === activeTab);
+
+  // Get highlights (5 most recent excluding the main video)
+  const highlights = allKajianData
+    .filter((item) => item.id !== mainVideo?.id)
+    .slice(0, 5);
 
   // Pagination
   const totalPages = Math.ceil(filteredVideos.length / videosPerPage);
@@ -131,7 +127,7 @@ export default function Kajian() {
     indexOfLastVideo
   );
 
-  // Fungsi untuk mengubah halaman pagination
+  // Function to change pagination page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Tab categories
@@ -144,53 +140,7 @@ export default function Kajian() {
     { id: 'khusus', name: 'Kajian Khusus' },
   ];
 
-  const highlights = [
-    {
-      title: 'Kajian Spesial: Hikmah Ramadan',
-      description:
-        'Kajian mendalam tentang makna dan hikmah bulan suci Ramadan',
-      thumbnail: 'https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=example1',
-      date: '20 Maret 2025',
-      speaker: 'Ustadz Ahmad',
-    },
-    {
-      title: 'Kajian Subuh: Pentingnya Keikhlasan',
-      description:
-        'Ustadz Ahmad membahas pentingnya keikhlasan dalam beribadah',
-      thumbnail: 'https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=example2',
-      date: '18 Maret 2025',
-      speaker: 'Ustadz Ahmad',
-    },
-    {
-      title: 'Kajian Dzuhur: Menjaga Lisan',
-      description:
-        'Pembahasan tentang pentingnya menjaga lisan dalam kehidupan',
-      thumbnail: 'https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=example3',
-      date: '15 Maret 2025',
-      speaker: 'Ustadz Budi',
-    },
-    {
-      title: 'Kajian Magrib: Memaafkan dan Melupakan',
-      description: 'Pentingnya memaafkan dan melupakan kesalahan orang lain',
-      thumbnail: 'https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=example4',
-      date: '12 Maret 2025',
-      speaker: 'Ustadz Hasan',
-    },
-    {
-      title: 'Kajian Isya: Makna Sabar dalam Islam',
-      description: 'Diskusi tentang makna sabar dalam perspektif Islam',
-      thumbnail: 'https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=example5',
-      date: '10 Maret 2025',
-      speaker: 'Ustadz Farhan',
-    },
-  ];
-
-  // Event schedule data
+  // Event schedule data (still using hardcoded data as this might come from a different API)
   const scheduleItems = [
     {
       day: 'Senin',
@@ -236,6 +186,13 @@ export default function Kajian() {
     },
   ];
 
+  // Handle retry on error
+  const handleRetry = () => {
+    setIsLoading(true);
+    setError(null);
+    fetchKajianData();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -248,8 +205,9 @@ export default function Kajian() {
         <div
           className="absolute top-0 w-full h-full bg-center bg-cover"
           style={{
-            backgroundImage:
-              "url('https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg')",
+            backgroundImage: mainVideo?.thumbnail
+              ? `url('${mainVideo.thumbnail}')`
+              : "url('https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg')",
           }}
         >
           <span
@@ -320,55 +278,92 @@ export default function Kajian() {
             </h2>
           </div>
 
-          <div className="flex flex-wrap">
+          {isLoading ? (
             <div className="w-full lg:w-8/12 px-4 mx-auto">
-              <a
-                href={mainVideo.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block relative rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group"
+              <div
+                className="relative rounded-xl overflow-hidden shadow-xl bg-gray-200 animate-pulse"
+                style={{ aspectRatio: '16/9' }}
               >
-                <div className="relative aspect-video">
-                  <img
-                    src={mainVideo.thumbnail}
-                    alt={mainVideo.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-70"></div>
-
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-20 h-20 bg-[#6DB144] rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                      <PlayIcon className="w-10 h-10 text-white" />
-                    </div>
-                  </div>
-
-                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                    <h3 className="text-2xl md:text-3xl font-bold mb-2">
-                      {mainVideo.title}
-                    </h3>
-                    <p className="text-gray-200 mb-4 max-w-2xl">
-                      {mainVideo.description}
-                    </p>
-
-                    <div className="flex flex-wrap items-center gap-4 text-sm">
-                      <div className="flex items-center">
-                        <UserIcon className="w-4 h-4 mr-1" />
-                        <span>{mainVideo.speaker}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <CalendarIcon className="w-4 h-4 mr-1" />
-                        <span>{mainVideo.date}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <ClockIcon className="w-4 h-4 mr-1" />
-                        <span>{mainVideo.duration}</span>
-                      </div>
-                    </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-20 h-20 bg-gray-300 rounded-full"></div>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <div className="h-8 bg-gray-300 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-gray-300 rounded w-full mb-4"></div>
+                  <div className="flex flex-wrap gap-4">
+                    <div className="h-4 bg-gray-300 rounded w-24"></div>
+                    <div className="h-4 bg-gray-300 rounded w-24"></div>
+                    <div className="h-4 bg-gray-300 rounded w-24"></div>
                   </div>
                 </div>
-              </a>
+              </div>
             </div>
-          </div>
+          ) : error ? (
+            <div className="text-center py-10">
+              <p className="text-red-500 mb-2">{error}</p>
+              <button
+                onClick={handleRetry}
+                className="px-4 py-2 bg-[#6DB144] text-white rounded-lg hover:bg-[#1C5827] transition-colors"
+              >
+                Coba Lagi
+              </button>
+            </div>
+          ) : mainVideo ? (
+            <div className="flex flex-wrap">
+              <div className="w-full lg:w-8/12 px-4 mx-auto">
+                <a
+                  href={mainVideo.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <div className="relative aspect-video">
+                    <img
+                      src={mainVideo.thumbnail}
+                      alt={mainVideo.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-70"></div>
+
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-20 h-20 bg-[#6DB144] rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                        <PlayIcon className="w-10 h-10 text-white" />
+                      </div>
+                    </div>
+
+                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                      <h3 className="text-2xl md:text-3xl font-bold mb-2">
+                        {mainVideo.title}
+                      </h3>
+                      <p className="text-gray-200 mb-4 max-w-2xl">
+                        {mainVideo.description}
+                      </p>
+
+                      <div className="flex flex-wrap items-center gap-4 text-sm">
+                        <div className="flex items-center">
+                          <UserIcon className="w-4 h-4 mr-1" />
+                          <span>{mainVideo.speaker}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <CalendarIcon className="w-4 h-4 mr-1" />
+                          <span>{mainVideo.date}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <ClockIcon className="w-4 h-4 mr-1" />
+                          <span>{mainVideo.duration}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-10">
+              <p className="text-gray-500">
+                Belum ada kajian utama yang tersedia.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Video Library Section */}
@@ -420,6 +415,16 @@ export default function Kajian() {
                 </div>
               ))}
             </div>
+          ) : error ? (
+            <div className="text-center py-10">
+              <p className="text-red-500 mb-2">{error}</p>
+              <button
+                onClick={handleRetry}
+                className="px-4 py-2 bg-[#6DB144] text-white rounded-lg hover:bg-[#1C5827] transition-colors"
+              >
+                Coba Lagi
+              </button>
+            </div>
           ) : (
             <>
               {/* Video Grid */}
@@ -427,11 +432,9 @@ export default function Kajian() {
                 {currentVideos.length > 0 ? (
                   currentVideos.map((video, index) => (
                     <a
-                      key={index}
                       href={video.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group"
                     >
                       <div className="relative overflow-hidden aspect-video">
                         <img
@@ -447,7 +450,7 @@ export default function Kajian() {
 
                         <div className="absolute bottom-2 right-2">
                           <span className="px-2 py-1 bg-black/70 text-white text-xs rounded-md">
-                            {video.duration}
+                            {video.duration || '45:00'}
                           </span>
                         </div>
                       </div>
@@ -633,47 +636,79 @@ export default function Kajian() {
               </div>
 
               <div className="bg-white rounded-xl shadow-md p-6">
-                <div className="space-y-6">
-                  {highlights.map((highlight, index) => (
-                    <a
-                      key={index}
-                      href={highlight.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex gap-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors"
+                {isLoading ? (
+                  <div className="space-y-6">
+                    {[1, 2, 3, 4, 5].map((index) => (
+                      <div key={index} className="flex gap-4 animate-pulse">
+                        <div className="w-24 h-24 bg-gray-200 rounded-lg"></div>
+                        <div className="flex-1">
+                          <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                          <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                          <div className="flex gap-3">
+                            <div className="h-3 bg-gray-200 rounded w-16"></div>
+                            <div className="h-3 bg-gray-200 rounded w-16"></div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : error ? (
+                  <div className="text-center py-10">
+                    <p className="text-red-500 mb-2">{error}</p>
+                    <button
+                      onClick={handleRetry}
+                      className="px-4 py-2 bg-[#6DB144] text-white rounded-lg hover:bg-[#1C5827] transition-colors"
                     >
-                      <div className="relative w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
-                        <img
-                          src={highlight.thumbnail}
-                          alt={highlight.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          <PlayIcon className="h-8 w-8 text-white" />
+                      Coba Lagi
+                    </button>
+                  </div>
+                ) : highlights.length > 0 ? (
+                  <div className="space-y-6">
+                    {highlights.map((highlight, index) => (
+                      <a
+                        href={highlight.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <div className="relative w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+                          <img
+                            src={highlight.thumbnail}
+                            alt={highlight.title}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <PlayIcon className="h-8 w-8 text-white" />
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="flex-1">
-                        <h3 className="font-bold text-gray-800 group-hover:text-[#6DB144] transition-colors line-clamp-2">
-                          {highlight.title}
-                        </h3>
-                        <p className="text-sm text-gray-600 mt-1 line-clamp-2 mb-2">
-                          {highlight.description}
-                        </p>
-                        <div className="flex items-center text-xs text-gray-500 gap-3">
-                          <span className="flex items-center">
-                            <UserIcon className="w-3 h-3 mr-1" />
-                            {highlight.speaker}
-                          </span>
-                          <span className="flex items-center">
-                            <CalendarIcon className="w-3 h-3 mr-1" />
-                            {highlight.date}
-                          </span>
+                        <div className="flex-1">
+                          <h3 className="font-bold text-gray-800 group-hover:text-[#6DB144] transition-colors line-clamp-2">
+                            {highlight.title}
+                          </h3>
+                          <p className="text-sm text-gray-600 mt-1 line-clamp-2 mb-2">
+                            {highlight.description}
+                          </p>
+                          <div className="flex items-center text-xs text-gray-500 gap-3">
+                            <span className="flex items-center">
+                              <UserIcon className="w-3 h-3 mr-1" />
+                              {highlight.speaker}
+                            </span>
+                            <span className="flex items-center">
+                              <CalendarIcon className="w-3 h-3 mr-1" />
+                              {highlight.date}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </a>
-                  ))}
-                </div>
+                      </a>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-10">
+                    <p className="text-gray-500">
+                      Belum ada highlight kajian yang tersedia.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -698,7 +733,7 @@ export default function Kajian() {
               Lihat Jadwal Kajian
             </a>
             <a
-              href="https://www.youtube.com/@masjidbaiturrohim"
+              href="https://www.youtube.com/@masjidbaiturrohim.korpriraya"
               target="_blank"
               rel="noopener noreferrer"
               className="px-6 py-3 bg-[#6DB144] text-white font-medium rounded-lg hover:bg-[#5ca23a] transition-colors"

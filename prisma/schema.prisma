@@ -52,3 +52,16 @@ model Donasi {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
+
+model Pengurus {
+  id               Int      @id @default(autoincrement())
+  nama             String
+  jabatan          String
+  deskripsi        String?
+  no_telepon       String?
+  email            String?
+  imageUrl         String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+

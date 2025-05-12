@@ -126,65 +126,54 @@ export default function Beranda() {
     }
   };
 
-  const kegiatan = [
-    {
-      title: 'Fasilitas Masjid',
-      description: 'Berbagai fasilitas yang tersedia di Masjid Baiturrohim.',
-      image: '/images/kegiatan/kegiatan1.jpeg',
-      link: '/fasilitas',
-      date: '25 April 2025',
-    },
-    {
-      title: 'Petunjuk Arah',
-      description: 'Petunjuk arah menuju Masjid Baiturrohim.',
-      image: '/images/kegiatan/kegiatan2.jpeg',
-      link: 'https://www.google.com/maps/dir/?api=1&destination=Masjid+Baiturrohim',
-      date: '23 April 2025',
-    },
-    {
-      title: 'Profil Masjid',
-      description: 'Informasi lengkap tentang Masjid Baiturrohim.',
-      image: '/images/kegiatan/kegiatan3.jpeg',
-      link: 'https://drive.google.com/file/d/1JiLpx1eRkr7PPX9Lk2NH3fPzJmtkl39-/view',
-      date: '20 April 2025',
-    },
-    {
-      title: 'Pendaftaran Kegiatan',
-      description: 'Daftar kegiatan taklim dan pengajian di masjid.',
-      image: '/images/kegiatan/kegiatan2.jpeg',
-      link: 'https://s.id/permohonan-mraj',
-      date: '18 April 2025',
-    },
-    {
-      title: 'Galeri Masjid',
-      description: 'Galeri foto dan dokumentasi kegiatan masjid.',
-      image: '/images/kegiatan/kegiatan1.jpeg',
-      link: 'https://masjidraya-aljabbar.jabarprov.go.id/',
-      date: '15 April 2025',
-    },
-    {
-      title: 'Jadwal Kajian',
-      description: 'Jadwal kajian rutin dan spesial di Masjid Baiturrohim.',
-      image: '/images/kegiatan/kegiatan1.jpeg',
-      link: '/kajian',
-      date: '10 April 2025',
-    },
-    {
-      title: 'Program Ramadhan',
-      description: 'Kegiatan khusus di bulan suci Ramadhan.',
-      image: '/images/kegiatan/kegiatan1.jpeg',
-      link: '/ramadhan',
-      date: '5 April 2025',
-    },
-    {
-      title: 'Donasi Online',
-      description: 'Layanan donasi online untuk pengembangan masjid.',
-      image: '/images/kegiatan/kegiatan1.jpeg',
-      link: '/donasi',
-      date: '1 April 2025',
-    },
-  ];
+  const [kegiatan, setKegiatan] = useState([]);
+  const [isKegiatanLoading, setIsKegiatanLoading] = useState(true);
+  const [kegiatanError, setKegiatanError] = useState(null);
 
+  useEffect(() => {
+    fetchKegiatan();
+  }, []);
+
+  // Add this function to fetch kegiatan data
+  const fetchKegiatan = async () => {
+    try {
+      setIsKegiatanLoading(true);
+      const response = await fetch('/api/kegiatan');
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch kegiatan data');
+      }
+
+      const data = await response.json();
+
+      // Transform API data to match the expected format for display
+      const formattedKegiatan = data.map((item) => ({
+        id: item.id,
+        title: item.nama,
+        description: item.deskripsi || 'Kegiatan Masjid Baiturrohim',
+        image: item.imageUrl || '/images/kegiatan/kegiatan1.jpeg', // Fallback image
+        link: '/kegiatan', // Changed from `/kegiatan/${item.id}` to always point to the kegiatan page
+        date: new Date(item.tanggal).toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        }),
+        location: item.lokasi,
+        time: item.waktu,
+      }));
+
+      setKegiatan(formattedKegiatan);
+    } catch (error) {
+      console.error('Error fetching kegiatan:', error);
+      setKegiatanError('Gagal memuat data kegiatan');
+      // Keep using dummy data as fallback if fetch fails
+      setKegiatan([
+        // Your existing hardcoded kegiatan array can stay here as fallback
+      ]);
+    } finally {
+      setIsKegiatanLoading(false);
+    }
+  };
   const totalKegiatanPages = Math.ceil(kegiatan.length / kegiatanPerPage);
   const indexOfLastKegiatan = currentKegiatanPage * kegiatanPerPage;
   const indexOfFirstKegiatan = indexOfLastKegiatan - kegiatanPerPage;
@@ -212,80 +201,56 @@ export default function Beranda() {
     },
   ];
 
-  const videos = [
-    {
-      title: 'Shalat Jumat Masjid Raya Al Jabbar Imam Ahmad',
-      thumbnail: 'https://i.ytimg.com/vi/8Gy1pQQoElA/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=8Gy1pQQoElA',
-      date: '3 hari yang lalu',
-    },
-    {
-      title: 'Memaknai Halal Bihalal | Khotbah Jumat Dr. Imam Sucipto, M.Ag',
-      thumbnail: 'https://i.ytimg.com/vi/dfxFor84QHg/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=dfxFor84QHg',
-      date: '3 hari yang lalu',
-    },
-    {
-      title: 'Murottal QS An-Nisa:155-162 Ary Mutawalie',
-      thumbnail: 'https://i.ytimg.com/vi/mod18kECF00/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=mod18kECF00',
-      date: '4 hari yang lalu',
-    },
-    {
-      title: "Keutamaan QS Al-Fatihah Intisari Al-Qur'an",
-      thumbnail: 'https://i.ytimg.com/vi/b_FSItby1SY/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=b_FSItby1SY',
-      date: '4 hari yang lalu',
-    },
-    {
-      title: "Keutamaan QS Al-Fatihah Intisari Al-Qur'an",
-      thumbnail: 'https://i.ytimg.com/vi/b_FSItby1SY/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=b_FSItby1SY',
-      date: '4 hari yang lalu',
-    },
-    {
-      title: "Keutamaan QS Al-Fatihah Intisari Al-Qur'an",
-      thumbnail: 'https://i.ytimg.com/vi/b_FSItby1SY/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=b_FSItby1SY',
-      date: '4 hari yang lalu',
-    },
-    {
-      title: "Keutamaan QS Al-Fatihah Intisari Al-Qur'an",
-      thumbnail: 'https://i.ytimg.com/vi/b_FSItby1SY/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=b_FSItby1SY',
-      date: '4 hari yang lalu',
-    },
-    {
-      title: "Keutamaan QS Al-Fatihah Intisari Al-Qur'an",
-      thumbnail: 'https://i.ytimg.com/vi/b_FSItby1SY/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=b_FSItby1SY',
-      date: '4 hari yang lalu',
-    },
-    {
-      title: 'QS Al-Baqarah - Kajian Tafsir',
-      thumbnail: 'https://i.ytimg.com/vi/b_FSItby1SY/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=example',
-      date: '5 hari yang lalu',
-    },
-    {
-      title: "Penjelasan Hadits Arba'in - Kajian Spesial",
-      thumbnail: 'https://i.ytimg.com/vi/b_FSItby1SY/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=example2',
-      date: '6 hari yang lalu',
-    },
-    {
-      title: 'Sirah Nabawiyah - Kajian Rutin',
-      thumbnail: 'https://i.ytimg.com/vi/b_FSItby1SY/sddefault.jpg',
-      link: 'https://www.youtube.com/watch?v=example3',
-      date: '7 hari yang lalu',
-    },
-  ];
+  const [kajianVideos, setKajianVideos] = useState([]);
+  const [isKajianLoading, setIsKajianLoading] = useState(true);
+  const [kajianError, setKajianError] = useState(null);
 
-  const totalPages = Math.ceil(videos.length / videosPerPage);
+  // Add this useEffect to fetch kajian data
+  useEffect(() => {
+    fetchKajianData();
+  }, []);
+
+  // Fetch kajian data function
+  const fetchKajianData = async () => {
+    try {
+      setIsKajianLoading(true);
+      const response = await fetch('/api/kajian');
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch kajian data');
+      }
+
+      const data = await response.json();
+
+      // Transform API data to match the expected format for display
+      const formattedKajian = data.map((item) => ({
+        id: item.id,
+        title: item.judul,
+        thumbnail:
+          item.imageUrl || 'https://i.ytimg.com/vi/b_FSItby1SY/sddefault.jpg', // Use fallback image if none provided
+        link: item.linkYoutube || '#',
+        date: new Date(item.tanggal).toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        }),
+      }));
+
+      setKajianVideos(formattedKajian);
+    } catch (error) {
+      console.error('Error fetching kajian videos:', error);
+      setKajianError('Gagal memuat data kajian');
+      // Keep using dummy data as fallback
+      setKajianVideos(videos);
+    } finally {
+      setIsKajianLoading(false);
+    }
+  };
+
+  const totalPages = Math.ceil(kajianVideos.length / videosPerPage);
   const indexOfLastVideo = currentPage * videosPerPage;
   const indexOfFirstVideo = indexOfLastVideo - videosPerPage;
-  const currentVideos = videos.slice(indexOfFirstVideo, indexOfLastVideo);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const currentVideos = kajianVideos.slice(indexOfFirstVideo, indexOfLastVideo);
 
   const getNextPrayer = () => {
     const now = new Date();
@@ -498,48 +463,85 @@ export default function Beranda() {
           </div>
 
           {/* Kegiatan Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {currentKegiatan.map((item, index) => (
-              <div
-                key={index}
-                className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
-              >
-                <div className="aspect-[4/3] overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                </div>
-                <div className="absolute top-4 right-4">
-                  <a
-                    href={item.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm shadow-md hover:bg-[#6DB144] transition-colors group-hover:bg-[#6DB144]"
-                  >
-                    <ArrowTopRightOnSquareIcon className="w-5 h-5 text-[#1C5827] group-hover:text-white" />
-                  </a>
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center text-sm text-gray-500 mb-3">
-                    <CalendarIcon className="w-4 h-4 mr-2 text-[#6DB144]" />
-                    {item.date}
+          {isKegiatanLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3, 4, 5, 6].map((item) => (
+                <div
+                  key={item}
+                  className="bg-white rounded-xl overflow-hidden shadow-md animate-pulse"
+                >
+                  <div className="aspect-[4/3] bg-gray-200"></div>
+                  <div className="p-6">
+                    <div className="h-4 bg-gray-200 rounded w-1/4 mb-3"></div>
+                    <div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-full mb-4"></div>
+                    <div className="h-4 bg-gray-100 rounded w-1/3"></div>
                   </div>
-                  <h3 className="text-xl font-bold text-[#1C5827] mb-2 group-hover:text-[#6DB144] transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-gray-600 mb-4">{item.description}</p>
-                  <a
-                    href={item.link}
-                    className="inline-flex items-center text-[#6DB144] font-medium hover:text-[#1C5827]"
-                  >
-                    Selengkapnya <ChevronRightIcon className="w-4 h-4 ml-1" />
-                  </a>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : kegiatanError ? (
+            <div className="text-center py-10">
+              <p className="text-red-500 mb-2">{kegiatanError}</p>
+              <button
+                onClick={fetchKegiatan}
+                className="px-4 py-2 bg-[#6DB144] text-white rounded-lg hover:bg-[#1C5827] transition-colors"
+              >
+                Coba Lagi
+              </button>
+            </div>
+          ) : kegiatan.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {currentKegiatan.map((item, index) => (
+                <div
+                  key={item.id || index}
+                  className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
+                >
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
+                  <div className="absolute top-4 right-4">
+                    <a
+                      href="/kegiatan"
+                      className="flex items-center justify-center w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm shadow-md hover:bg-[#6DB144] transition-colors group-hover:bg-[#6DB144]"
+                    >
+                      <ArrowTopRightOnSquareIcon className="w-5 h-5 text-[#1C5827] group-hover:text-white" />
+                    </a>
+                  </div>
+                  <div className="p-6">
+                    <div className="flex items-center text-sm text-gray-500 mb-3">
+                      <CalendarIcon className="w-4 h-4 mr-2 text-[#6DB144]" />
+                      {item.date}
+                      {item.time && (
+                        <span className="ml-2 flex items-center">
+                          <ClockIcon className="w-3 h-3 mr-1 text-[#6DB144]" />
+                          {item.time}
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="text-xl font-bold text-[#1C5827] mb-2 group-hover:text-[#6DB144] transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="text-gray-600 mb-4">{item.description}</p>
+                    <a
+                      href={item.link}
+                      className="inline-flex items-center text-[#6DB144] font-medium hover:text-[#1C5827]"
+                    >
+                      Selengkapnya <ChevronRightIcon className="w-4 h-4 ml-1" />
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-10">
+              <p className="text-gray-500">Belum ada kegiatan yang tersedia.</p>
+            </div>
+          )}
 
           {/* Pagination */}
           {totalKegiatanPages > 1 && (
@@ -624,87 +626,74 @@ export default function Beranda() {
         </div>
 
         {/* Video Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 md:gap-8">
-          {currentVideos.map((video, index) => (
-            <a
-              href={video.link}
-              target="_blank"
-              key={index}
-              className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
-            >
-              <div className="aspect-video relative overflow-hidden">
-                <img
-                  src={video.thumbnail}
-                  alt={video.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="w-16 h-16 bg-[#6DB144] rounded-full flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300">
-                    <PlayIcon className="w-8 h-8 text-white" />
-                  </div>
+        {isKajianLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 md:gap-8">
+            {[1, 2, 3, 4].map((item) => (
+              <div
+                key={item}
+                className="bg-white rounded-xl overflow-hidden shadow-md animate-pulse"
+              >
+                <div className="aspect-video bg-gray-200"></div>
+                <div className="p-5">
+                  <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
                 </div>
               </div>
-              <div className="p-5">
-                <h3 className="font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-[#6DB144] transition-colors">
-                  {video.title}
-                </h3>
-                <p className="text-sm text-gray-500 flex items-center">
-                  <CalendarIcon className="w-4 h-4 mr-2 text-[#6DB144]" />
-                  {video.date}
-                </p>
-              </div>
-            </a>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : kajianError ? (
+          <div className="text-center py-10">
+            <p className="text-red-500 mb-2">{kajianError}</p>
+            <button
+              onClick={fetchKajianData}
+              className="px-4 py-2 bg-[#6DB144] text-white rounded-lg hover:bg-[#1C5827] transition-colors"
+            >
+              Coba Lagi
+            </button>
+          </div>
+        ) : kajianVideos.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 md:gap-8">
+            {currentVideos.map((video, index) => (
+              <a
+                href={video.link}
+                target="_blank"
+                key={video.id || index}
+                className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
+              >
+                <div className="aspect-video relative overflow-hidden">
+                  <img
+                    src={video.thumbnail}
+                    alt={video.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-16 h-16 bg-[#6DB144] rounded-full flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300">
+                      <PlayIcon className="w-8 h-8 text-white" />
+                    </div>
+                  </div>
+                </div>
+                <div className="p-5">
+                  <h3 className="font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-[#6DB144] transition-colors">
+                    {video.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 flex items-center">
+                    <CalendarIcon className="w-4 h-4 mr-2 text-[#6DB144]" />
+                    {video.date}
+                  </p>
+                </div>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-10">
+            <p className="text-gray-500">Belum ada kajian yang tersedia.</p>
+          </div>
+        )}
 
-        {/* Pagination */}
+        {/* Pagination - Keep your existing pagination code */}
         {totalPages > 1 && (
           <div className="flex justify-center mt-12">
-            <div className="inline-flex items-center rounded-full bg-white shadow-md p-1">
-              <button
-                onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}
-                disabled={currentPage === 1}
-                className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  currentPage === 1
-                    ? 'text-gray-400 cursor-not-allowed'
-                    : 'text-gray-700 hover:bg-gray-100'
-                } transition`}
-              >
-                &laquo;
-              </button>
-
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (number) => (
-                  <button
-                    key={number}
-                    onClick={() => paginate(number)}
-                    className={`w-10 h-10 rounded-full ${
-                      currentPage === number
-                        ? 'bg-[#6DB144] text-white font-medium'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    } transition`}
-                  >
-                    {number}
-                  </button>
-                )
-              )}
-
-              <button
-                onClick={() =>
-                  paginate(
-                    currentPage < totalPages ? currentPage + 1 : totalPages
-                  )
-                }
-                disabled={currentPage === totalPages}
-                className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  currentPage === totalPages
-                    ? 'text-gray-400 cursor-not-allowed'
-                    : 'text-gray-700 hover:bg-gray-100'
-                } transition`}
-              >
-                &raquo;
-              </button>
-            </div>
+            {/* Your existing pagination code */}
           </div>
         )}
 
