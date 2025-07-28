@@ -4,12 +4,15 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { UsersRoundIcon } from 'lucide-react';
 
 export default function SidebarAdmin() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
   const pathname = usePathname();
   const [isMobile, setIsMobile] = useState(false);
+  const userData = JSON.parse(localStorage.getItem('adminUser') || '{}');
+  const isSuperAdmin = userData.role === 'super_admin';
 
   // Deteksi ukuran layar untuk responsivitas
   useEffect(() => {
@@ -252,6 +255,20 @@ export default function SidebarAdmin() {
               ))}
             </ul>
           </nav>
+
+          {isSuperAdmin && (
+            <Link
+              href="/users-admin"
+              className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                pathname === '/users-admin'
+                  ? 'bg-green-100 text-green-700'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+              }`}
+            >
+              <UsersRoundIcon className="mr-3 h-5 w-5" />
+              Manajemen User
+            </Link>
+          )}
 
           {/* Logout button */}
           <div className="p-4 border-t border-gray-200">

@@ -51,6 +51,10 @@ const nextConfig = {
         source: '/pengurus-admin',
         destination: '/front-admin/pengurus-admin',
       },
+      {
+        source: '/users-admin',
+        destination: '/front-admin/users-admin',
+      },
     ];
   },
 };

@@ -6,6 +6,19 @@ const prisma = new PrismaClient();
 async function main() {
   const hashedPassword = await bcrypt.hash('password123', 10);
 
+  // Create super admin
+  await prisma.user.upsert({
+    where: { username: 'superadmin' },
+    update: {},
+    create: {
+      username: 'superadmin',
+      password: hashedPassword,
+      name: 'Super Administrator',
+      role: 'super_admin',
+    },
+  });
+
+  // Create regular admin
   await prisma.user.upsert({
     where: { username: 'admin' },
     update: {},
@@ -13,10 +26,11 @@ async function main() {
       username: 'admin',
       password: hashedPassword,
       name: 'Administrator',
+      role: 'admin',
     },
   });
 
-  console.log('Admin user seeded');
+  console.log('Users seeded');
 }
 
 main()

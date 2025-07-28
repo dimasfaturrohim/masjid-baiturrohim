@@ -9,6 +9,7 @@ export function middleware(request) {
     '/kajian-admin',
     '/donasi-admin',
     '/pengurus-admin',
+    '/users-admin', // Tambahkan ini
   ];
 
   // Paths API yang membutuhkan autentikasi
@@ -84,5 +85,7 @@ export const config = {
     '/donasi-admin/:path*',
     '/pengurus-admin',
     '/pengurus-admin/:path*',
+    '/users-admin',
+    '/users-admin/:path*',
   ],
 };

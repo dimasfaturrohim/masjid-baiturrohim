@@ -74,7 +74,7 @@ export default function Footer() {
               Harapan Jaya, Sukarame, Bandar Lampung City, Lampung 35131
             </p>
             <a
-              href="https://g.co/kgs/F6o7awp"
+              href="https://maps.app.goo.gl/pmCPvpgU66PjeqZ28"
               target="_blank"
               className="inline-flex items-center text-[#6DB144] hover:text-white"
             >

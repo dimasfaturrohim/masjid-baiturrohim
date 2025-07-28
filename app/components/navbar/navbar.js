@@ -8,10 +8,12 @@ export default function Navbar() {
   const pathname = usePathname(); // Get current pathname
   const [isLoading, setIsLoading] = useState(false);
   const [activeRoute, setActiveRoute] = useState(pathname); // Initialize with current pathname
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Update activeRoute when pathname changes
   useEffect(() => {
     setActiveRoute(pathname);
+    setIsSidebarOpen(false); // Close sidebar on route change
   }, [pathname]);
 
   const handleNavigation = (path) => {
@@ -26,6 +28,7 @@ export default function Navbar() {
         setIsLoading(false);
       }, 800);
     }
+    setIsSidebarOpen(false); // Close sidebar on navigation
   };
 
   // Function to determine if a nav item is active
@@ -73,12 +76,93 @@ export default function Navbar() {
                 </div>
               </div>
             </div>
+            {/* Desktop menu */}
             <div className="hidden md:flex space-x-4">
               {navItems.map((item) => (
                 <button
                   key={item.path}
                   onClick={() => handleNavigation(item.path)}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                    isActive(item.path)
+                      ? 'text-white bg-[#6DB144]'
+                      : 'text-gray-700 hover:text-[#6DB144]'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+            {/* Hamburger menu button */}
+            <div className="md:hidden flex items-center">
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="text-gray-700 hover:text-[#6DB144] focus:outline-none"
+                aria-label="Buka menu"
+              >
+                <svg
+                  className="w-8 h-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d={
+                      isSidebarOpen
+                        ? 'M6 18L18 6M6 6l12 12' // X icon
+                        : 'M4 6h16M4 12h16M4 18h16' // Hamburger
+                    }
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        {/* Sidebar mobile menu */}
+        <div
+          className={`fixed inset-0 z-40 bg-black bg-opacity-40 transition-opacity duration-300 ${
+            isSidebarOpen ? 'block' : 'hidden'
+          } md:hidden`}
+          onClick={() => setIsSidebarOpen(false)}
+        ></div>
+        <div
+          className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300 ${
+            isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
+          } md:hidden`}
+        >
+          <div className="flex flex-col h-full">
+            <div className="flex items-center justify-between px-6 py-4 border-b">
+              <span className="font-bold text-[#6DB144] text-lg">Menu</span>
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="text-gray-700 hover:text-[#6DB144] focus:outline-none"
+                aria-label="Tutup menu"
+              >
+                <svg
+                  className="w-7 h-7"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-1 flex flex-col py-6 px-6 space-y-2">
+              {navItems.map((item) => (
+                <button
+                  key={item.path}
+                  onClick={() => handleNavigation(item.path)}
+                  className={`w-full text-left px-4 py-3 rounded-md text-base font-medium transition-colors duration-200 ${
                     isActive(item.path)
                       ? 'text-white bg-[#6DB144]'
                       : 'text-gray-700 hover:text-[#6DB144]'
