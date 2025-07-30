@@ -4,17 +4,16 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { UsersRoundIcon } from 'lucide-react';
 
 export default function SidebarAdmin() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
   const pathname = usePathname();
   const [isMobile, setIsMobile] = useState(false);
-  const userData = JSON.parse(localStorage.getItem('adminUser') || '{}');
-  const isSuperAdmin = userData.role === 'super_admin';
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [userData, setUserData] = useState({});
 
-  // Deteksi ukuran layar untuk responsivitas
+  // Deteksi ukuran layar untuk responsivitas dan cek user data
   useEffect(() => {
     const checkScreenSize = () => {
       setIsMobile(window.innerWidth < 1024);
@@ -25,18 +24,52 @@ export default function SidebarAdmin() {
       }
     };
 
+    // Cek user data dari localStorage (hanya di client-side)
+    const checkUserData = () => {
+      try {
+        const storedUserData = localStorage.getItem('adminUser');
+        console.log('Stored user data in sidebar:', storedUserData);
+
+        if (storedUserData) {
+          const parsedUserData = JSON.parse(storedUserData);
+          console.log('Parsed user data:', parsedUserData);
+          console.log('User role:', parsedUserData.role);
+          console.log(
+            'Is super admin check:',
+            parsedUserData.role === 'super_admin'
+          );
+
+          setUserData(parsedUserData);
+          setIsSuperAdmin(parsedUserData.role === 'super_admin');
+        } else {
+          console.log('No user data found in localStorage');
+          setIsSuperAdmin(false);
+        }
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        setIsSuperAdmin(false);
+      }
+    };
+
     checkScreenSize();
+    checkUserData();
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
+
+  // Debug log untuk isSuperAdmin
+  useEffect(() => {
+    console.log('isSuperAdmin state changed:', isSuperAdmin);
+  }, [isSuperAdmin]);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   const handleLogout = () => {
     localStorage.removeItem('adminLoggedIn');
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
     document.cookie = 'token=; path=/; max-age=0';
-    router.push('/login'); // Sesuaikan dengan URL di middleware
+    router.push('/login');
   };
 
   const menuItems = [
@@ -265,7 +298,20 @@ export default function SidebarAdmin() {
                   : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
               }`}
             >
-              <UsersRoundIcon className="mr-3 h-5 w-5" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="mr-3 h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                />
+              </svg>
               Manajemen User
             </Link>
           )}

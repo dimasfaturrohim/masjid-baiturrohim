@@ -34,10 +34,26 @@ export default function AdminLogin() {
         7 * 24 * 60 * 60
       }; SameSite=Lax`;
 
-      // Then set localStorage items
-      localStorage.setItem('adminToken', data.token);
-      localStorage.setItem('adminUser', JSON.stringify(data.user));
-      localStorage.setItem('adminLoggedIn', 'true');
+      // Then set localStorage items with better error handling
+      try {
+        localStorage.setItem('adminToken', data.token);
+        localStorage.setItem('adminUser', JSON.stringify(data.user));
+        localStorage.setItem('adminLoggedIn', 'true');
+
+        // Verify data was stored correctly
+        const storedUser = localStorage.getItem('adminUser');
+        const storedToken = localStorage.getItem('adminToken');
+        const storedLogin = localStorage.getItem('adminLoggedIn');
+
+        console.log('Stored user data:', storedUser);
+        console.log('Stored token:', storedToken ? 'exists' : 'missing');
+        console.log('Stored login status:', storedLogin);
+        console.log('User role:', data.user.role);
+        console.log('Is super admin:', data.user.role === 'super_admin');
+      } catch (localStorageError) {
+        console.error('Error storing data in localStorage:', localStorageError);
+        throw new Error('Gagal menyimpan data login');
+      }
 
       console.log('Login successful, redirecting to dashboard...');
 
