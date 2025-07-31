@@ -1,36 +1,91 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { hashPassword, verifyToken } from '@/lib/auth';
+import { hashPassword } from '@/lib/auth';
+import { verifyToken } from '@/lib/auth';
 
-// PUT - Update user (super admin only)
-export async function PUT(request, { params }) {
+// GET - Ambil user berdasarkan ID
+export async function GET(request, { params }) {
   try {
-    const { id } = params;
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { error: 'Token tidak ditemukan' },
+        { status: 401 }
+      );
+    }
 
-    // Verify token and check role
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
+    const token = authHeader.substring(7);
     const payload = await verifyToken(token);
 
     if (!payload || payload.role !== 'super_admin') {
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
     }
 
-    const body = await request.json();
-    const { username, password, name, role } = body;
+    // Await params untuk Next.js 15
+    const { id } = await params;
 
-    // Validasi input
-    if (!username || !name || !role) {
+    const user = await prisma.user.findUnique({
+      where: { id: parseInt(id) },
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!user) {
       return NextResponse.json(
-        { error: 'Username, name, dan role wajib diisi' },
+        { error: 'User tidak ditemukan' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(user);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    return NextResponse.json(
+      { error: 'Terjadi kesalahan server' },
+      { status: 500 }
+    );
+  }
+}
+
+// PUT - Update user
+export async function PUT(request, { params }) {
+  try {
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { error: 'Token tidak ditemukan' },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.substring(7);
+    const payload = await verifyToken(token);
+
+    if (!payload || payload.role !== 'super_admin') {
+      return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
+    }
+
+    // Await params untuk Next.js 15
+    const { id } = await params;
+
+    const body = await request.json();
+    const { username, password, name, email, role } = body;
+
+    if (!username || !name || !email) {
+      return NextResponse.json(
+        { error: 'Username, name, dan email dibutuhkan' },
         { status: 400 }
       );
     }
 
-    if (!['admin', 'super_admin'].includes(role)) {
-      return NextResponse.json({ error: 'Role tidak valid' }, { status: 400 });
-    }
-
-    // Cek user exists
+    // Cek apakah user ada
     const existingUser = await prisma.user.findUnique({
       where: { id: parseInt(id) },
     });
@@ -42,7 +97,7 @@ export async function PUT(request, { params }) {
       );
     }
 
-    // Cek username sudah digunakan oleh user lain
+    // Cek apakah username sudah digunakan oleh user lain
     const usernameExists = await prisma.user.findFirst({
       where: {
         username,
@@ -53,59 +108,85 @@ export async function PUT(request, { params }) {
     if (usernameExists) {
       return NextResponse.json(
         { error: 'Username sudah digunakan' },
-        { status: 409 }
+        { status: 400 }
       );
     }
 
-    // Prepare update data
+    // Cek apakah email sudah digunakan oleh user lain
+    const emailExists = await prisma.user.findFirst({
+      where: {
+        email,
+        id: { not: parseInt(id) },
+      },
+    });
+
+    if (emailExists) {
+      return NextResponse.json(
+        { error: 'Email sudah digunakan' },
+        { status: 400 }
+      );
+    }
+
+    // Siapkan data untuk update
     const updateData = {
       username,
       name,
-      role,
+      email,
+      role: role || 'admin',
     };
 
-    // Hash password jika ada
+    // Hash password jika disediakan
     if (password) {
       updateData.password = await hashPassword(password);
     }
 
     // Update user
-    const updatedUser = await prisma.user.update({
+    const user = await prisma.user.update({
       where: { id: parseInt(id) },
       data: updateData,
       select: {
         id: true,
         username: true,
         name: true,
+        email: true,
         role: true,
+        createdAt: true,
         updatedAt: true,
       },
     });
 
-    return NextResponse.json(updatedUser);
+    return NextResponse.json(user);
   } catch (error) {
     console.error('Error updating user:', error);
     return NextResponse.json(
-      { error: 'Gagal mengupdate user' },
+      { error: 'Terjadi kesalahan server' },
       { status: 500 }
     );
   }
 }
 
-// DELETE - Hapus user (super admin only)
+// DELETE - Hapus user
 export async function DELETE(request, { params }) {
   try {
-    const { id } = params;
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { error: 'Token tidak ditemukan' },
+        { status: 401 }
+      );
+    }
 
-    // Verify token and check role
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
+    const token = authHeader.substring(7);
     const payload = await verifyToken(token);
 
     if (!payload || payload.role !== 'super_admin') {
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
     }
 
-    // Cek user exists
+    // Await params untuk Next.js 15
+    const { id } = await params;
+
+    // Cek apakah user ada
     const existingUser = await prisma.user.findUnique({
       where: { id: parseInt(id) },
     });
@@ -114,14 +195,6 @@ export async function DELETE(request, { params }) {
       return NextResponse.json(
         { error: 'User tidak ditemukan' },
         { status: 404 }
-      );
-    }
-
-    // Jangan izinkan super admin menghapus dirinya sendiri
-    if (payload.id === parseInt(id)) {
-      return NextResponse.json(
-        { error: 'Tidak dapat menghapus akun sendiri' },
-        { status: 400 }
       );
     }
 
@@ -134,7 +207,7 @@ export async function DELETE(request, { params }) {
   } catch (error) {
     console.error('Error deleting user:', error);
     return NextResponse.json(
-      { error: 'Gagal menghapus user' },
+      { error: 'Terjadi kesalahan server' },
       { status: 500 }
     );
   }

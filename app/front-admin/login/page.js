@@ -118,6 +118,15 @@ export default function AdminLogin() {
             Login
           </button>
         </form>
+        {/* Tambahkan link forgot password di bawah form login */}
+        <div className="text-center mt-4">
+          <a
+            href="/front-admin/forgot-password"
+            className="text-blue-600 hover:text-blue-500 text-sm"
+          >
+            Lupa Password?
+          </a>
+        </div>
       </div>
     </div>
   );

@@ -613,7 +613,7 @@ export default function Beranda() {
             </h2>
           </div>
           <a
-            href="https://www.youtube.com/@masjidaljabbar"
+            href="https://www.youtube.com/@masjidbaiturrohim.korpriraya"
             target="_blank"
             className="inline-flex items-center px-6 py-3 bg-[#1C5827] hover:bg-[#6DB144] text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg"
           >

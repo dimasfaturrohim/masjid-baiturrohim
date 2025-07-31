@@ -8,12 +8,12 @@ import {
   UserIcon,
   ShieldCheckIcon,
   ExclamationTriangleIcon,
+  EnvelopeIcon,
 } from '@heroicons/react/24/outline';
 import SidebarAdmin from '@/app/components/navbar/sidebar-admin';
 import { useRouter } from 'next/navigation';
 import LoadingModal from '@/app/components/modal/loading-modal';
 
-//
 export default function UsersAdmin() {
   const router = useRouter();
   const [users, setUsers] = useState([]);
@@ -28,6 +28,7 @@ export default function UsersAdmin() {
     username: '',
     password: '',
     name: '',
+    email: '', // Tambahkan field email
     role: 'admin',
   });
 
@@ -89,6 +90,7 @@ export default function UsersAdmin() {
       username: '',
       password: '',
       name: '',
+      email: '', // Reset email field
       role: 'admin',
     });
     setFormError('');
@@ -102,6 +104,7 @@ export default function UsersAdmin() {
       username: user.username,
       password: '',
       name: user.name,
+      email: user.email || '', // Tambahkan email dari user
       role: user.role,
     });
     setFormError('');
@@ -117,6 +120,7 @@ export default function UsersAdmin() {
       const userData = {
         username: currentUser.username,
         name: currentUser.name,
+        email: currentUser.email, // Tambahkan email ke data yang dikirim
         role: currentUser.role,
       };
 
@@ -237,6 +241,9 @@ export default function UsersAdmin() {
                       User
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Email
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Role
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -265,6 +272,14 @@ export default function UsersAdmin() {
                               {user.username}
                             </div>
                           </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <EnvelopeIcon className="h-4 w-4 text-gray-400 mr-2" />
+                          <span className="text-sm text-gray-900">
+                            {user.email || '-'}
+                          </span>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -350,6 +365,24 @@ export default function UsersAdmin() {
                     className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-green-500 focus:border-green-500"
                     required
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={currentUser.email}
+                    onChange={handleInputChange}
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-1 focus:ring-green-500 focus:border-green-500"
+                    required
+                    placeholder="user@example.com"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Email digunakan untuk reset password
+                  </p>
                 </div>
 
                 <div>
