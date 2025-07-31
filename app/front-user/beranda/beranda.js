@@ -186,18 +186,15 @@ export default function Beranda() {
   const images = [
     {
       src: '/images/masjid1.jpg',
-      description:
-        'Masjid Baiturrohim tampak depan dengan arsitektur modern yang mencerminkan keindahan dan ketenangan.',
     },
     {
       src: '/images/masjid2.jpg',
-      description:
-        'Kegiatan shalat berjamaah di Masjid Baiturrohim yang dihadiri oleh jamaah dari berbagai kalangan.',
     },
     {
-      src: '/images/masjid2.jpg',
-      description:
-        'Pemandangan malam hari di Masjid Baiturrohim dengan pencahayaan yang indah dan suasana yang damai.',
+      src: '/images/masjid3.jpg',
+    },
+    {
+      src: '/images/masjid4.jpg',
     },
   ];
 
