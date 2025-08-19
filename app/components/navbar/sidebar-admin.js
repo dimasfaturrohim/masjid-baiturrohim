@@ -214,6 +214,8 @@ export default function SidebarAdmin() {
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-30"
           onClick={toggleSidebar}
+          onTouchEnd={toggleSidebar}
+          style={{ touchAction: 'manipulation' }}
         ></div>
       )}
 
@@ -222,6 +224,11 @@ export default function SidebarAdmin() {
         className={`fixed top-0 left-0 h-full bg-white shadow-xl z-40 transition-all duration-300 ${
           isOpen ? 'w-72' : 'w-20'
         } overflow-hidden`}
+        style={{
+          height: '100vh',
+          height: '100dvh', // Dynamic viewport height for mobile
+          touchAction: 'pan-y',
+        }}
       >
         <div className="flex flex-col h-full">
           {/* Logo and brand */}
@@ -280,6 +287,7 @@ export default function SidebarAdmin() {
                         ? 'bg-green-100 text-green-700 border-r-4 border-green-700'
                         : 'text-gray-600'
                     } ${isOpen ? '' : 'justify-center'}`}
+                    style={{ touchAction: 'manipulation' }}
                   >
                     <span className="flex-shrink-0">{item.icon}</span>
                     {isOpen && <span className="ml-3">{item.name}</span>}
@@ -297,6 +305,7 @@ export default function SidebarAdmin() {
                   ? 'bg-green-100 text-green-700'
                   : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
               }`}
+              style={{ touchAction: 'manipulation' }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -320,9 +329,11 @@ export default function SidebarAdmin() {
           <div className="p-4 border-t border-gray-200">
             <button
               onClick={handleLogout}
+              onTouchEnd={handleLogout}
               className={`flex items-center text-red-600 hover:bg-red-50 rounded-md ${
                 isOpen ? 'px-6' : 'px-2'
               } py-3 transition-colors w-full justify-center`}
+              style={{ touchAction: 'manipulation' }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -346,7 +357,9 @@ export default function SidebarAdmin() {
           <div className="hidden lg:block p-4 border-t border-gray-200">
             <button
               onClick={toggleSidebar}
+              onTouchEnd={toggleSidebar}
               className="flex items-center justify-center w-full text-gray-500 hover:bg-gray-100 rounded-md py-2"
+              style={{ touchAction: 'manipulation' }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

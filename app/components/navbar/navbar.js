@@ -127,19 +127,28 @@ export default function Navbar() {
             isSidebarOpen ? 'block' : 'hidden'
           } md:hidden`}
           onClick={() => setIsSidebarOpen(false)}
+          onTouchEnd={() => setIsSidebarOpen(false)}
+          style={{ touchAction: 'manipulation' }}
         ></div>
         <div
           className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300 ${
             isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
           } md:hidden`}
+          style={{
+            height: '100vh',
+            height: '100dvh', // Dynamic viewport height for mobile
+            touchAction: 'pan-y',
+          }}
         >
           <div className="flex flex-col h-full">
             <div className="flex items-center justify-between px-6 py-4 border-b">
               <span className="font-bold text-[#6DB144] text-lg">Menu</span>
               <button
                 onClick={() => setIsSidebarOpen(false)}
-                className="text-gray-700 hover:text-[#6DB144] focus:outline-none"
+                onTouchEnd={() => setIsSidebarOpen(false)}
+                className="text-gray-700 hover:text-[#6DB144] focus:outline-none p-2 -m-2"
                 aria-label="Tutup menu"
+                style={{ touchAction: 'manipulation' }}
               >
                 <svg
                   className="w-7 h-7"
@@ -157,16 +166,18 @@ export default function Navbar() {
                 </svg>
               </button>
             </div>
-            <div className="flex-1 flex flex-col py-6 px-6 space-y-2">
+            <div className="flex-1 flex flex-col py-6 px-6 space-y-2 overflow-y-auto">
               {navItems.map((item) => (
                 <button
                   key={item.path}
                   onClick={() => handleNavigation(item.path)}
+                  onTouchEnd={() => handleNavigation(item.path)}
                   className={`w-full text-left px-4 py-3 rounded-md text-base font-medium transition-colors duration-200 ${
                     isActive(item.path)
                       ? 'text-white bg-[#6DB144]'
                       : 'text-gray-700 hover:text-[#6DB144]'
                   }`}
+                  style={{ touchAction: 'manipulation' }}
                 >
                   {item.label}
                 </button>
