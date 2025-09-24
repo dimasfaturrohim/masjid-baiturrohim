@@ -68,11 +68,11 @@ export default function AdminLogin() {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2" htmlFor="username">
+            <label className="block text-gray-700 mb-1" htmlFor="username">
               Username
             </label>
             <input
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-black"
               id="username"
               type="text"
               value={username}
@@ -86,7 +86,7 @@ export default function AdminLogin() {
               Password
             </label>
             <input
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-black"
               id="password"
               type="password"
               value={password}
