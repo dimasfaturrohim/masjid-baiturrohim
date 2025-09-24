@@ -34,10 +34,26 @@ export default function AdminLogin() {
         7 * 24 * 60 * 60
       }; SameSite=Lax`;
 
-      // Then set localStorage items
-      localStorage.setItem('adminToken', data.token);
-      localStorage.setItem('adminUser', JSON.stringify(data.user));
-      localStorage.setItem('adminLoggedIn', 'true');
+      // Then set localStorage items with better error handling
+      try {
+        localStorage.setItem('adminToken', data.token);
+        localStorage.setItem('adminUser', JSON.stringify(data.user));
+        localStorage.setItem('adminLoggedIn', 'true');
+
+        // Verify data was stored correctly
+        const storedUser = localStorage.getItem('adminUser');
+        const storedToken = localStorage.getItem('adminToken');
+        const storedLogin = localStorage.getItem('adminLoggedIn');
+
+        console.log('Stored user data:', storedUser);
+        console.log('Stored token:', storedToken ? 'exists' : 'missing');
+        console.log('Stored login status:', storedLogin);
+        console.log('User role:', data.user.role);
+        console.log('Is super admin:', data.user.role === 'super_admin');
+      } catch (localStorageError) {
+        console.error('Error storing data in localStorage:', localStorageError);
+        throw new Error('Gagal menyimpan data login');
+      }
 
       console.log('Login successful, redirecting to dashboard...');
 
@@ -68,11 +84,11 @@ export default function AdminLogin() {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-1" htmlFor="username">
+            <label className="block text-gray-700 mb-2" htmlFor="username">
               Username
             </label>
             <input
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
               id="username"
               type="text"
               value={username}
@@ -86,7 +102,7 @@ export default function AdminLogin() {
               Password
             </label>
             <input
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
               id="password"
               type="password"
               value={password}
@@ -102,6 +118,15 @@ export default function AdminLogin() {
             Login
           </button>
         </form>
+        {/* Tambahkan link forgot password di bawah form login */}
+        <div className="text-center mt-4">
+          <a
+            href="/front-admin/forgot-password"
+            className="text-blue-600 hover:text-blue-500 text-sm"
+          >
+            Lupa Password?
+          </a>
+        </div>
       </div>
     </div>
   );

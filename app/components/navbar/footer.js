@@ -48,7 +48,7 @@ export default function Footer() {
               </svg>
             </a>
             <a
-              href="https://wa.me/+6281234567890"
+              href="https://wa.me/+6282377321000"
               className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#6DB144] transition-colors"
             >
               <svg
@@ -74,7 +74,7 @@ export default function Footer() {
               Harapan Jaya, Sukarame, Bandar Lampung City, Lampung 35131
             </p>
             <a
-              href="https://g.co/kgs/F6o7awp"
+              href="https://maps.app.goo.gl/2QvRpEnBxyAAzv4g6"
               target="_blank"
               className="inline-flex items-center text-[#6DB144] hover:text-white"
             >

@@ -154,8 +154,7 @@ export default function Kegiatan() {
         <div
           className="absolute top-0 w-full h-full bg-center bg-cover"
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1519817650390-64a93db51149?ixlib=rb-4.0.3')",
+            backgroundImage: "url('/images/kegiatan/masjid1.jpg')",
           }}
         >
           <span

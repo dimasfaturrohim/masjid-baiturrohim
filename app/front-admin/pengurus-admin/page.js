@@ -714,7 +714,7 @@ export default function PengurusAdmin() {
                           value={currentPengurus.no_telepon || ''}
                           onChange={handleInputChange}
                           className="w-full rounded-md border border-gray-300 pl-8 pr-3 py-2 focus:ring-1 focus:ring-green-500 focus:border-green-500 transition-colors text-sm"
-                          placeholder="08123456789"
+                          placeholder="082377321000"
                         />
                       </div>
                     </div>

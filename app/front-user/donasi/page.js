@@ -37,9 +37,9 @@ export default function Donasi() {
               <div className="flex justify-center mb-6">
                 <div className="bg-white p-4 rounded-xl shadow-sm">
                   <img
-                    src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://masjid-baiturrohim.com/donasi"
+                    src="/images/qris1.png"
                     alt="QR Code Donasi"
-                    className="w-48 h-48"
+                    className="w-100 h-100"
                   />
                 </div>
               </div>
@@ -63,45 +63,24 @@ export default function Donasi() {
                 <div className="border border-gray-200 rounded-xl p-6 transition-all hover:border-[#6DB144] hover:shadow-md">
                   <div className="flex items-center mb-4">
                     <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                      <span className="font-bold text-blue-600">BSI</span>
+                      <span className="font-bold text-blue-600">BRI</span>
                     </div>
                     <div>
-                      <h3 className="font-bold">Bank Syariah Indonesia</h3>
-                      <p className="text-gray-500 text-sm">Bank Syariah</p>
+                      <h3 className="font-bold">Bank Rakyat Indonesia</h3>
+                      <p className="text-gray-500 text-sm">
+                        Bank Rakyat Indonesia
+                      </p>
                     </div>
                   </div>
                   <div className="mb-3">
                     <p className="text-gray-500 text-sm mb-1">Nomor Rekening</p>
                     <p className="font-mono text-lg font-medium">
-                      7120-456-789
+                      5802-01-008405-50-8
                     </p>
                   </div>
                   <div>
                     <p className="text-gray-500 text-sm mb-1">Atas Nama</p>
-                    <p className="font-medium">Masjid Baiturrohim</p>
-                  </div>
-                </div>
-
-                {/* Bank Card 2 */}
-                <div className="border border-gray-200 rounded-xl p-6 transition-all hover:border-[#6DB144] hover:shadow-md">
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
-                      <span className="font-bold text-green-600">BNI</span>
-                    </div>
-                    <div>
-                      <h3 className="font-bold">Bank Negara Indonesia</h3>
-                      <p className="text-gray-500 text-sm">Bank BUMN</p>
-                    </div>
-                  </div>
-                  <div className="mb-3">
-                    <p className="text-gray-500 text-sm mb-1">Nomor Rekening</p>
-                    <p className="font-mono text-lg font-medium">
-                      0278-5432-1098
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-gray-500 text-sm mb-1">Atas Nama</p>
-                    <p className="font-medium">Yayasan Masjid Baiturrohim</p>
+                    <p className="font-medium"> PENGURUS MASJID BAITURROHIM</p>
                   </div>
                 </div>
               </div>

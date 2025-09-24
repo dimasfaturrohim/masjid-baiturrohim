@@ -186,18 +186,15 @@ export default function Beranda() {
   const images = [
     {
       src: '/images/masjid1.jpg',
-      description:
-        'Masjid Baiturrohim tampak depan dengan arsitektur modern yang mencerminkan keindahan dan ketenangan.',
     },
     {
       src: '/images/masjid2.jpg',
-      description:
-        'Kegiatan shalat berjamaah di Masjid Baiturrohim yang dihadiri oleh jamaah dari berbagai kalangan.',
     },
     {
-      src: '/images/masjid2.jpg',
-      description:
-        'Pemandangan malam hari di Masjid Baiturrohim dengan pencahayaan yang indah dan suasana yang damai.',
+      src: '/images/masjid3.jpg',
+    },
+    {
+      src: '/images/masjid4.jpg',
     },
   ];
 
@@ -616,7 +613,7 @@ export default function Beranda() {
             </h2>
           </div>
           <a
-            href="https://www.youtube.com/@masjidaljabbar"
+            href="https://www.youtube.com/@masjidbaiturrohim.korpriraya"
             target="_blank"
             className="inline-flex items-center px-6 py-3 bg-[#1C5827] hover:bg-[#6DB144] text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg"
           >

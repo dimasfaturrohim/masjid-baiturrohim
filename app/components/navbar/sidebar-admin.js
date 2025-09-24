@@ -10,8 +10,10 @@ export default function SidebarAdmin() {
   const [isOpen, setIsOpen] = useState(true);
   const pathname = usePathname();
   const [isMobile, setIsMobile] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [userData, setUserData] = useState({});
 
-  // Deteksi ukuran layar untuk responsivitas
+  // Deteksi ukuran layar untuk responsivitas dan cek user data
   useEffect(() => {
     const checkScreenSize = () => {
       setIsMobile(window.innerWidth < 1024);
@@ -22,18 +24,52 @@ export default function SidebarAdmin() {
       }
     };
 
+    // Cek user data dari localStorage (hanya di client-side)
+    const checkUserData = () => {
+      try {
+        const storedUserData = localStorage.getItem('adminUser');
+        console.log('Stored user data in sidebar:', storedUserData);
+
+        if (storedUserData) {
+          const parsedUserData = JSON.parse(storedUserData);
+          console.log('Parsed user data:', parsedUserData);
+          console.log('User role:', parsedUserData.role);
+          console.log(
+            'Is super admin check:',
+            parsedUserData.role === 'super_admin'
+          );
+
+          setUserData(parsedUserData);
+          setIsSuperAdmin(parsedUserData.role === 'super_admin');
+        } else {
+          console.log('No user data found in localStorage');
+          setIsSuperAdmin(false);
+        }
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        setIsSuperAdmin(false);
+      }
+    };
+
     checkScreenSize();
+    checkUserData();
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
+
+  // Debug log untuk isSuperAdmin
+  useEffect(() => {
+    console.log('isSuperAdmin state changed:', isSuperAdmin);
+  }, [isSuperAdmin]);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   const handleLogout = () => {
     localStorage.removeItem('adminLoggedIn');
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
     document.cookie = 'token=; path=/; max-age=0';
-    router.push('/login'); // Sesuaikan dengan URL di middleware
+    router.push('/login');
   };
 
   const menuItems = [
@@ -178,6 +214,8 @@ export default function SidebarAdmin() {
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-30"
           onClick={toggleSidebar}
+          onTouchEnd={toggleSidebar}
+          style={{ touchAction: 'manipulation' }}
         ></div>
       )}
 
@@ -186,6 +224,11 @@ export default function SidebarAdmin() {
         className={`fixed top-0 left-0 h-full bg-white shadow-xl z-40 transition-all duration-300 ${
           isOpen ? 'w-72' : 'w-20'
         } overflow-hidden`}
+        style={{
+          height: '100vh',
+          height: '100dvh', // Dynamic viewport height for mobile
+          touchAction: 'pan-y',
+        }}
       >
         <div className="flex flex-col h-full">
           {/* Logo and brand */}
@@ -244,6 +287,7 @@ export default function SidebarAdmin() {
                         ? 'bg-green-100 text-green-700 border-r-4 border-green-700'
                         : 'text-gray-600'
                     } ${isOpen ? '' : 'justify-center'}`}
+                    style={{ touchAction: 'manipulation' }}
                   >
                     <span className="flex-shrink-0">{item.icon}</span>
                     {isOpen && <span className="ml-3">{item.name}</span>}
@@ -253,13 +297,43 @@ export default function SidebarAdmin() {
             </ul>
           </nav>
 
+          {isSuperAdmin && (
+            <Link
+              href="/users-admin"
+              className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                pathname === '/users-admin'
+                  ? 'bg-green-100 text-green-700'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+              }`}
+              style={{ touchAction: 'manipulation' }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="mr-3 h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                />
+              </svg>
+              Manajemen User
+            </Link>
+          )}
+
           {/* Logout button */}
           <div className="p-4 border-t border-gray-200">
             <button
               onClick={handleLogout}
+              onTouchEnd={handleLogout}
               className={`flex items-center text-red-600 hover:bg-red-50 rounded-md ${
                 isOpen ? 'px-6' : 'px-2'
               } py-3 transition-colors w-full justify-center`}
+              style={{ touchAction: 'manipulation' }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -283,7 +357,9 @@ export default function SidebarAdmin() {
           <div className="hidden lg:block p-4 border-t border-gray-200">
             <button
               onClick={toggleSidebar}
+              onTouchEnd={toggleSidebar}
               className="flex items-center justify-center w-full text-gray-500 hover:bg-gray-100 rounded-md py-2"
+              style={{ touchAction: 'manipulation' }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

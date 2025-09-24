@@ -269,31 +269,28 @@ export default function Kajian() {
         {/* Featured Video Section */}
         <div className="py-12">
           <div className="mb-8 text-center">
-            <span className="text-[#6DB144] text-sm font-semibold uppercase tracking-wider mb-2">
+            <span className="text-[#6DB144] text-xs sm:text-sm font-semibold uppercase tracking-wider mb-4 block">
               DIREKOMENDASIKAN
             </span>
-            <h2 className="text-3xl font-bold text-[#1C5827] relative inline-block">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#1C5827] relative inline-block">
               Kajian Utama
               <div className="absolute -bottom-2 left-0 right-0 h-1 w-full bg-[#6DB144] rounded-full"></div>
             </h2>
           </div>
 
           {isLoading ? (
-            <div className="w-full lg:w-8/12 px-4 mx-auto">
-              <div
-                className="relative rounded-xl overflow-hidden shadow-xl bg-gray-200 animate-pulse"
-                style={{ aspectRatio: '16/9' }}
-              >
+            <div className="w-full sm:w-10/12 md:w-8/12 px-0 sm:px-4 mx-auto">
+              <div className="relative rounded-xl overflow-hidden shadow-xl bg-gray-200 animate-pulse aspect-video">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-20 h-20 bg-gray-300 rounded-full"></div>
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-300 rounded-full"></div>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <div className="h-8 bg-gray-300 rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-gray-300 rounded w-full mb-4"></div>
-                  <div className="flex flex-wrap gap-4">
-                    <div className="h-4 bg-gray-300 rounded w-24"></div>
-                    <div className="h-4 bg-gray-300 rounded w-24"></div>
-                    <div className="h-4 bg-gray-300 rounded w-24"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+                  <div className="h-6 sm:h-8 bg-gray-300 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 sm:h-4 bg-gray-300 rounded w-full mb-4"></div>
+                  <div className="flex flex-wrap gap-2 sm:gap-4">
+                    <div className="h-3 sm:h-4 bg-gray-300 rounded w-16 sm:w-24"></div>
+                    <div className="h-3 sm:h-4 bg-gray-300 rounded w-16 sm:w-24"></div>
+                    <div className="h-3 sm:h-4 bg-gray-300 rounded w-16 sm:w-24"></div>
                   </div>
                 </div>
               </div>
@@ -309,36 +306,33 @@ export default function Kajian() {
               </button>
             </div>
           ) : mainVideo ? (
-            <div className="flex flex-wrap">
-              <div className="w-full lg:w-8/12 px-4 mx-auto">
+            <div className="flex flex-wrap justify-center">
+              <div className="w-full sm:w-10/12 md:w-8/12 px-0 sm:px-4 mx-auto">
                 <a
                   href={mainVideo.link}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <div className="relative aspect-video">
+                  <div className="relative aspect-video rounded-xl overflow-hidden shadow-xl group">
                     <img
                       src={mainVideo.thumbnail}
                       alt={mainVideo.title}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-70"></div>
-
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-20 h-20 bg-[#6DB144] rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                        <PlayIcon className="w-10 h-10 text-white" />
+                      <div className="w-14 h-14 sm:w-20 sm:h-20 bg-[#6DB144] rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                        <PlayIcon className="w-7 h-7 sm:w-10 sm:h-10 text-white" />
                       </div>
                     </div>
-
-                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                      <h3 className="text-2xl md:text-3xl font-bold mb-2">
+                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
+                      <h3 className="text-lg sm:text-2xl md:text-3xl font-bold mb-2">
                         {mainVideo.title}
                       </h3>
-                      <p className="text-gray-200 mb-4 max-w-2xl">
+                      <p className="text-gray-200 mb-2 sm:mb-4 max-w-2xl text-sm sm:text-base">
                         {mainVideo.description}
                       </p>
-
-                      <div className="flex flex-wrap items-center gap-4 text-sm">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
                         <div className="flex items-center">
                           <UserIcon className="w-4 h-4 mr-1" />
                           <span>{mainVideo.speaker}</span>
