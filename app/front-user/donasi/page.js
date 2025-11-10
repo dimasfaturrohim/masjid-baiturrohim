@@ -37,7 +37,7 @@ export default function Donasi() {
               <div className="flex justify-center mb-6">
                 <div className="bg-white p-4 rounded-xl shadow-sm">
                   <img
-                    src="/images/qris1.png"
+                    src="/images/qris2.jpg"
                     alt="QR Code Donasi"
                     className="w-100 h-100"
                   />
