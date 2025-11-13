@@ -2,6 +2,7 @@
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function Navbar() {
   const router = useRouter();
@@ -61,21 +62,21 @@ export default function Navbar() {
       <nav className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <div className="flex items-center flex-shrink-0">
-              <Image
-                src="/images/Logo Masjid Baiturrohim.png"
-                alt="Logo Masjid Baiturrohim"
-                width={60}
-                height={60}
-                className="mr-4"
-              />
-              <div className="text-green-500 text-left">
-                <div className="text-xl font-bold leading-none">Masjid</div>
-                <div className="text-2xl font-bold leading-none">
-                  Baiturrohim
+            <Link href="/" className="flex items-center flex-shrink-0">
+                <Image
+                  src="/images/Logo Masjid Baiturrohim.png"
+                  alt="Logo Masjid Baiturrohim"
+                  width={60}
+                  height={60}
+                  className="mr-4"
+                />
+                <div className="text-green-500 text-left">
+                  <div className="text-xl font-bold leading-none">Masjid</div>
+                  <div className="text-2xl font-bold leading-none">
+                    Baiturrohim
+                  </div>
                 </div>
-              </div>
-            </div>
+            </Link>
             {/* Desktop menu */}
             <div className="hidden md:flex space-x-4">
               {navItems.map((item) => (
