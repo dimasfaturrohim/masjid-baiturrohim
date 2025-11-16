@@ -280,7 +280,7 @@ export default function AdminDashboard() {
               </button>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow hover:shadow-md transition-shadow border-l-4 border-teal-500">
+            {/* <div className="bg-white p-6 rounded-xl shadow hover:shadow-md transition-shadow border-l-4 border-teal-500">
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-lg font-semibold">Laporan Keuangan</h3>
                 <div className="p-2 bg-teal-50 rounded-lg">
@@ -296,9 +296,9 @@ export default function AdminDashboard() {
               >
                 Kelola Keuangan
               </button>
-            </div>
+            </div> */}
 
-            <div className="bg-white p-6 rounded-xl shadow hover:shadow-md transition-shadow border-l-4 border-gray-500">
+            {/* <div className="bg-white p-6 rounded-xl shadow hover:shadow-md transition-shadow border-l-4 border-gray-500">
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-lg font-semibold">Pengaturan</h3>
                 <div className="p-2 bg-gray-50 rounded-lg">
@@ -314,7 +314,7 @@ export default function AdminDashboard() {
               >
                 Kelola Pengaturan
               </button>
-            </div>
+            </div> */}
           </div>
 
           {/* Recent Activities Section - Now showing actual kegiatan data */}
