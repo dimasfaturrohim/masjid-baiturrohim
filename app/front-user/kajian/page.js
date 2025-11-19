@@ -552,7 +552,7 @@ export default function Kajian() {
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap">
             {/* Jadwal Kajian Rutin */}
-            <div className="w-full lg:w-7/12 px-4 mb-10 lg:mb-0">
+            {/* <div className="w-full lg:w-7/12 px-4 mb-10 lg:mb-0">
               <div className="mb-8">
                 <span className="text-[#6DB144] text-sm font-semibold uppercase tracking-wider block mb-2">
                   IKUTI RUTIN
@@ -615,7 +615,7 @@ export default function Kajian() {
                   </table>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Highlights Kajian */}
             <div className="w-full lg:w-5/12 px-4">

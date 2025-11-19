@@ -435,12 +435,13 @@ export default function Kegiatan() {
                     ajukan proposal kegiatan Anda.
                   </p>
                   <div className="text-center mt-6">
-                    <button
+                    <a
+                      href="https://wa.me/+6282377321000"
                       className="bg-white text-[#1C5827] active:bg-gray-100 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                       type="button"
                     >
                       Hubungi Kami
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>
