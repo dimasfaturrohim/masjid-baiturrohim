@@ -76,10 +76,10 @@ export default function Beranda() {
       const month = date.getMonth() + 1;
       const year = date.getFullYear();
 
-      const url = `https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=11`;
+      const url = `https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=20`;
       const response = await fetch(url);
       const data = await response.json();
-
+      
       const day = date.getDate() - 1; // API uses 0-based index
       const todayPrayers = data.data[day].timings;
 
