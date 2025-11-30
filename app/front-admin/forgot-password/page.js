@@ -9,10 +9,17 @@ export default function ForgotPassword() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
-  const [timeLeft, setTimeLeft] = useState(() => {
-    const saved = localStorage.getItem("reset_timer");
-    return saved ? parseInt(saved, 10) : null;
-  });
+  const [timeLeft, setTimeLeft] = useState(null); // default null (aman SSR)
+
+  // Load localStorage setelah client mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("reset_timer");
+      if (saved) {
+        setTimeLeft(parseInt(saved, 10));
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,8 +42,10 @@ export default function ForgotPassword() {
         setMessage(data.message);
         setEmail('');
 
-        setTimeLeft(600);                   // mulai countdown 10 menit
-        localStorage.setItem("reset_timer", "600");
+        setTimeLeft(600);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("reset_timer", "600");
+        }
       } else {
         setError(data.error);
       }
@@ -48,18 +57,24 @@ export default function ForgotPassword() {
   };
 
   useEffect(() => {
-    if (timeLeft === null) return; // belum mulai
+    if (timeLeft === null) return;
 
     const interval = setInterval(() => {
-      setTimeLeft(prev => {
+      setTimeLeft((prev) => {
         if (prev <= 1) {
-          localStorage.removeItem("reset_timer");
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("reset_timer");
+          }
           clearInterval(interval);
           return 0;
         }
 
         const updated = prev - 1;
-        localStorage.setItem("reset_timer", updated.toString());
+
+        if (typeof window !== "undefined") {
+          localStorage.setItem("reset_timer", updated.toString());
+        }
+
         return updated;
       });
     }, 1000);

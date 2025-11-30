@@ -18,25 +18,38 @@ function ResetPasswordForm() {
   });
 
   useEffect(() => {
-    if (timeLeft === null) return; // belum mulai
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("reset_timer");
+      if (saved) setTimeLeft(parseInt(saved, 10));
+    }
+  }, []);
+
+
+  useEffect(() => {
+    if (timeLeft === null) return;
 
     const interval = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
-          localStorage.removeItem("reset_timer");
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("reset_timer");
+          }
           clearInterval(interval);
           return 0;
         }
 
         const updated = prev - 1;
-        localStorage.setItem("reset_timer", updated.toString());
+
+        if (typeof window !== "undefined") {
+          localStorage.setItem("reset_timer", updated.toString());
+        }
+
         return updated;
       });
     }, 1000);
 
     return () => clearInterval(interval);
   }, [timeLeft]);
-
 
 
   useEffect(() => {
@@ -79,6 +92,10 @@ function ResetPasswordForm() {
 
       if (response.ok) {
         setMessage(data.message);
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("reset_timer");
+        }
+
         setTimeout(() => {
           router.push('/front-admin/login');
         }, 2000);

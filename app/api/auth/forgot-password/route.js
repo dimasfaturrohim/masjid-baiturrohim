@@ -73,7 +73,7 @@ export async function POST(request) {
             <a href="${resetUrl}" style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 16px 0;">
               Reset Password
             </a>
-            <p>Link ini akan kadaluarsa dalam 1 jam.</p>
+            <p>Link ini akan kadaluarsa dalam 10 menit.</p>
             <p>Jika Anda tidak meminta reset password, abaikan email ini.</p>
             <hr style="margin: 20px 0;">
             <p style="color: #666; font-size: 12px;">
