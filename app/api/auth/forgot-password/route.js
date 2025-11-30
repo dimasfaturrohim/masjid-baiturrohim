@@ -45,7 +45,7 @@ export async function POST(request) {
 
     // Generate reset token
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 jam
+    const resetTokenExpiry = new Date(Date.now() + (10 * 60)); // 10 menit
 
     // Simpan reset token ke database
     await prisma.user.update({

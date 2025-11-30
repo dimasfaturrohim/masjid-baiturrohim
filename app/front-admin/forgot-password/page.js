@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function ForgotPassword() {
@@ -9,6 +9,10 @@ export default function ForgotPassword() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const saved = localStorage.getItem("reset_timer");
+    return saved ? parseInt(saved, 10) : null;
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,6 +34,9 @@ export default function ForgotPassword() {
       if (response.ok) {
         setMessage(data.message);
         setEmail('');
+
+        setTimeLeft(600);                   // mulai countdown 10 menit
+        localStorage.setItem("reset_timer", "600");
       } else {
         setError(data.error);
       }
@@ -39,6 +46,29 @@ export default function ForgotPassword() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (timeLeft === null) return; // belum mulai
+
+    const interval = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          localStorage.removeItem("reset_timer");
+          clearInterval(interval);
+          return 0;
+        }
+
+        const updated = prev - 1;
+        localStorage.setItem("reset_timer", updated.toString());
+        return updated;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timeLeft]);
+
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = (timeLeft % 60).toString().padStart(2, '0');
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -69,9 +99,9 @@ export default function ForgotPassword() {
             />
           </div>
 
-          {message && (
+          {message && timeLeft !== null && (
             <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
-              {message}
+              {message}. Session akan kadaluarsa dalam waktu <strong>{minutes}:{seconds}</strong>.
             </div>
           )}
 

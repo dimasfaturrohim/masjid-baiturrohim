@@ -159,7 +159,7 @@ export default function Laporan() {
       const currentYear = now.getFullYear();
 
       // Generate report
-      const doc = generateMonthlyReport(donasi, currentMonth, currentYear);
+      const doc = await generateMonthlyReport(donasi, currentMonth, currentYear);
 
       // Generate filename
       const monthName = now.toLocaleString('id-ID', { month: 'long' });
@@ -184,7 +184,7 @@ export default function Laporan() {
       const currentYear = new Date().getFullYear();
 
       // Generate report
-      const doc = generateYearlyReport(donasi, currentYear);
+      const doc = await generateYearlyReport(donasi, currentYear);
 
       // Generate filename
       const filename = `Laporan_Tahunan_${currentYear}.pdf`;
